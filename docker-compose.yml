@@ -6,6 +6,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: s4VFziWxEIS5640
       MYSQL_DATABASE: douchewijzer
+      MYSQL_USER: douchewijzer
+      MYSQL_PASSWORD: s4VFziWxEIS5640
     ports:
       - "3306:3306"
     volumes:
@@ -14,7 +16,7 @@ services:
   microservice:
     build: ./microservice
     environment:
-      DB_USER: root
+      DB_USER: douchewijzer
       DB_PASSWORD: s4VFziWxEIS5640
       DB_NAME: douchewijzer
     ports:

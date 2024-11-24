@@ -10,7 +10,7 @@ const app = express();
 const db = await mysql.createConnection({
   host: 'dwdb1.danieldj.nl',
   port: 3306,
-  user: process.env.DB_USER,
+  user: 'douchewijzer',
   password: 's4VFziWxEIS5640',
   database: process.env.DB_NAME || 'douchewijzer'
 });
