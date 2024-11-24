@@ -1,10 +1,21 @@
-// start.js setup from learnnode.com by Wes Bos
 import express from 'express';
 import * as dotenv from 'dotenv';
+import mysql from 'mysql2/promise';
 dotenv.config({ path: 'variables.env' });
 import indexRouter from './routes/index.js';
 
 const app = express();
+
+// MySQL database connection
+const db = await mysql.createConnection({
+  host: 'dwdb1.danieldj.nl',
+  port: 3306,
+  user: 'douchewijzer',
+  password: 's4VFziWxEIS5640',
+  database: process.env.DB_NAME || 'douchewijzer'
+});
+
+app.set('db', db);
 
 // support json encoded and url-encoded bodies, mainly used for post and update
 app.use(express.json());
