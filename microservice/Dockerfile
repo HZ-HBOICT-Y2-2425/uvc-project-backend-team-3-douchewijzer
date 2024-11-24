@@ -1,2 +1,12 @@
-FROM node:22.11.0
-RUN mkdir -p /usr/src/app
+FROM node:14
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 3011
+
+CMD ["node", "code/start.js"]

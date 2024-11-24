@@ -7,27 +7,26 @@ const db = await JSONFilePreset('db.json', defaultData)
 const data = db.data.data
 
 export async function responseExample(req, res) {
-  res.status(200).send(data);
+  const db = req.app.get('db');
+  const [rows] = await db.execute('SELECT * FROM examples');
+  res.status(200).send(rows);
 }
 
 export async function updateExample(req, res) {
-  let id = req.query.id;
-  let name = req.query.name;
-  let type = req.query.type;
+  const db = req.app.get('db');
+  let { id, name, type } = req.query;
   let time = new Date().toLocaleString();
-  let example = {id: id, name: name, type: type, time: time};  
-  console.log(example);
-  data.push(example);
-  await db.write();
-
+  let example = { id, name, type, time };
+  await db.execute('INSERT INTO examples (id, name, type, time) VALUES (?, ?, ?, ?)', [id, name, type, time]);
   res.status(201).send(`I added this example: ${JSON.stringify(example)}?`);
 }
 
 export async function responseByIdExample(req, res) {
+  const db = req.app.get('db');
   let id = req.params.id;
-  let example = data.find(example => example.id === id);
-  if (example) {
-    res.status(200).send(example);
+  const [rows] = await db.execute('SELECT * FROM examples WHERE id = ?', [id]);
+  if (rows.length > 0) {
+    res.status(200).send(rows[0]);
   } else {
     res.status(404).send('Example not found');
   }

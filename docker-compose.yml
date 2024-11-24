@@ -1,27 +1,33 @@
+version: '3.8'
+
 services:
-  microservice:
-    container_name: microservice
-    build: ./microservice
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: s4VFziWxEIS5640
+      MYSQL_DATABASE: douchewijzer
+    ports:
+      - "3306:3306"
     volumes:
-      - ./microservice/code:/usr/src/app
-    networks:
-      - msexample
+      - mysql-data:/var/lib/mysql
+
+  microservice:
+    build: ./microservice
+    environment:
+      DB_USER: root
+      DB_PASSWORD: s4VFziWxEIS5640
+      DB_NAME: douchewijzer
     ports:
       - "3011:3011"
-    working_dir: /usr/src/app
-    command: bash -c "npm install && npm run dev"
-  gateway:
-    container_name: apigateway
+    depends_on:
+      - mysql
+
+  apigateway:
     build: ./apigateway
-    volumes:
-      - ./apigateway/code:/usr/src/app
-    networks:
-      - msexample
     ports:
       - "3010:3010"
-    working_dir: /usr/src/app
-    command: bash -c "npm install && npm run dev"
+    depends_on:
+      - microservice
 
-networks:
-  msexample:
-    driver: bridge
+volumes:
+  mysql-data:
