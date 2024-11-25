@@ -1,6 +1,6 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
-dotenv.config({ path: 'variables.env' });
+dotenv.config({ path: '../../variables.env' }); // Updated path
 import indexRouter from './routes/index.js';
 
 const app = express();
@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/', indexRouter);
 
-app.set('port', process.env.PORT || 3010);
+app.set('port', process.env.GATEWAY_PORT);
 const server = app.listen(app.get('port'), () => {
   console.log(`🍿 Express running → PORT ${server.address().port}`);
 });

@@ -1,18 +1,10 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
-dotenv.config({ path: 'variables.env' });
+dotenv.config({ path: '../../variables.env' }); // Updated path
 import indexRouter from './routes/index.js';
 
 const app = express();
-
-// Log environment variables to verify they are loaded correctly
-console.log('DB_HOST:', process.env.DB_HOST);
-console.log('DB_PORT:', process.env.DB_PORT);
-console.log('DB_USER:', process.env.DB_USER);
-console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
-console.log('DB_NAME:', process.env.DB_NAME);
-console.log('PORT:', process.env.PORT);
 
 // MySQL database connection
 let db;
@@ -39,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/', indexRouter);
 
-app.set('port', process.env.PORT || 3011);
+app.set('port', process.env.SHOP_PORT);
 const server = app.listen(app.get('port'), () => {
   console.log(`🍿 Express running → PORT ${server.address().port}`);
 });

@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 3011
 
-CMD ["node", "code/start.js"]
+CMD ["npm", "run", "dev"]

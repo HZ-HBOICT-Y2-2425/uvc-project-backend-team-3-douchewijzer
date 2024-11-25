@@ -1,35 +1,49 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:8.0
+  microservice-users:
+    build: ./microservice-users
     environment:
-      MYSQL_ROOT_PASSWORD: s4VFziWxEIS5640
-      MYSQL_DATABASE: douchewijzer
-      MYSQL_USER: douchewijzer
-      MYSQL_PASSWORD: s4VFziWxEIS5640
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql-data:/var/lib/mysql
+      // ...existing code...
+    depends_on:
+      - mysql
 
-  microservice:
-    build: ./microservice
+  microservice-timer:
+    build: ./microservice-timer
     environment:
-      DB_USER: douchewijzer
-      DB_PASSWORD: s4VFziWxEIS5640
-      DB_NAME: douchewijzer
-    ports:
-      - "3011:3011"
+      // ...existing code...
+    depends_on:
+      - mysql
+
+  microservice-statistics:
+    build: ./microservice-statistics
+    environment:
+      // ...existing code...
+    depends_on:
+      - mysql
+
+  microservice-shop:
+    build: ./microservice-shop
+    environment:
+      // ...existing code...
+    depends_on:
+      - mysql
+
+  microservice-goals-milestones:
+    build: ./microservice-goals-milestones
+    environment:
+      // ...existing code...
     depends_on:
       - mysql
 
   apigateway:
     build: ./apigateway
-    ports:
-      - "3010:3010"
     depends_on:
-      - microservice
+      - microservice-users
+      - microservice-timer
+      - microservice-statistics
+      - microservice-shop
+      - microservice-goals-milestones
 
 volumes:
   mysql-data:
