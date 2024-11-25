@@ -1,35 +1,59 @@
-version: '3.8'
-
 services:
-  mysql:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: s4VFziWxEIS5640
-      MYSQL_DATABASE: douchewijzer
-      MYSQL_USER: douchewijzer
-      MYSQL_PASSWORD: s4VFziWxEIS5640
-    ports:
-      - "3306:3306"
+  microservice-users:
+    build: ./microservice-users
     volumes:
-      - mysql-data:/var/lib/mysql
+      - ./microservice-users/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
 
-  microservice:
-    build: ./microservice
-    environment:
-      DB_USER: douchewijzer
-      DB_PASSWORD: s4VFziWxEIS5640
-      DB_NAME: douchewijzer
-    ports:
-      - "3011:3011"
-    depends_on:
-      - mysql
+  microservice-timer:
+    build: ./microservice-timer
+    volumes:
+      - ./microservice-timer/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
+
+  microservice-statistics:
+    build: ./microservice-statistics
+    volumes:
+      - ./microservice-statistics/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
+
+  microservice-shop:
+    build: ./microservice-shop
+    volumes:
+      - ./microservice-shop/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
+
+  microservice-goals-milestones:
+    build: ./microservice-goals-milestones
+    volumes:
+      - ./microservice-goals-milestones/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
 
   apigateway:
     build: ./apigateway
+    volumes:
+      - ./apigateway/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
     ports:
-      - "3010:3010"
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}" # Only expose the API Gateway
     depends_on:
-      - microservice
+      - microservice-users
+      - microservice-timer
+      - microservice-statistics
+      - microservice-shop
+      - microservice-goals-milestones
 
 volumes:
   mysql-data:
