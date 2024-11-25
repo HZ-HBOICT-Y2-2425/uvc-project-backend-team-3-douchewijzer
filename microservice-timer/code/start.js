@@ -1,7 +1,7 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
-dotenv.config({ path: '../../variables.env' }); // Updated path
+dotenv.config({ path: '../../.env' }); // Updated path
 import indexRouter from './routes/index.js';
 
 const app = express();

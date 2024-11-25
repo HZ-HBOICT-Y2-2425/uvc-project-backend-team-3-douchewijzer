@@ -1,43 +1,53 @@
-version: '3.8'
-
 services:
   microservice-users:
     build: ./microservice-users
-    environment:
-      // ...existing code...
-    depends_on:
-      - mysql
+    volumes:
+      - ./microservice-users/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
 
   microservice-timer:
     build: ./microservice-timer
-    environment:
-      // ...existing code...
-    depends_on:
-      - mysql
+    volumes:
+      - ./microservice-timer/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
 
   microservice-statistics:
     build: ./microservice-statistics
-    environment:
-      // ...existing code...
-    depends_on:
-      - mysql
+    volumes:
+      - ./microservice-statistics/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
 
   microservice-shop:
     build: ./microservice-shop
-    environment:
-      // ...existing code...
-    depends_on:
-      - mysql
+    volumes:
+      - ./microservice-shop/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
 
   microservice-goals-milestones:
     build: ./microservice-goals-milestones
-    environment:
-      // ...existing code...
-    depends_on:
-      - mysql
+    volumes:
+      - ./microservice-goals-milestones/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
 
   apigateway:
     build: ./apigateway
+    volumes:
+      - ./apigateway/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
+    ports:
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}" # Only expose the API Gateway
     depends_on:
       - microservice-users
       - microservice-timer
