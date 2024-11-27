@@ -1,0 +1,67 @@
+name: CI/CD for douchewijzer Backend
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Docker
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+        
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+          
+      # Step 3: Create .env file from GitHub Secrets
+      - name: Create .env file
+        run: |
+          echo "Creating .env file..."
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "USERS_PORT=${{ secrets.USERS_PORT }}" >> .env
+          echo "GOALS_MILESTONES_PORT=${{ secrets.GOALS_MILESTONES_PORT }}" >> .env
+          echo "GATEWAY_PORT=${{ secrets.GATEWAY_PORT }}" >> .env
+          echo "STATISTICS_PORT=${{ secrets.STATISTICS_PORT }}" >> .env
+          echo "SHOP_PORT=${{ secrets.SHOP_PORT }}" >> .env
+          echo "TIMER_PORT=${{ secrets.TIMER_PORT }}" >> .env
+
+      # Step 4: Build and start the Docker containers
+      - name: Build and Start Docker Compose
+        run: docker-compose up --build -d
+
+      # Step 5: Wait for services to start
+      - name: Wait for services to be ready
+        run: sleep 5
+
+      # Step 6: Run health checks or tests
+      - name: Run API Gateway tests
+        run: |
+          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/users || exit 1
+          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/shop || exit 1
+          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/goalsMilestones || exit 1
+          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/statistics || exit 1
+          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/timer || exit 1
+          echo "API Gateway is up and running"
+
+      # Step 7: Tear down Docker containers
+      - name: Tear Down Docker Containers
+        run: docker-compose down
