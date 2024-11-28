@@ -96,6 +96,6 @@ jobs:
         name: coverage-report
         path: coverage
 
-    # # Step 12: Run ESLint (new step for linting)
+    # Step 12: Run ESLint (step for linting)
       - name: Run ESLint
         run: npm run lint
