@@ -74,3 +74,28 @@ jobs:
           -H "Content-Type: application/json" \
           -d '{"username": "GitHub Actions", "content": "🚨 Build Failed in CI/CD pipeline: Check the logs at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
           ${{ secrets.DISCORD_WEBHOOK_URL }}
+    # Step 8: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/checkout@v3
+        with: 
+          node-version: '18'
+
+    # step 9: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+    # step 10: Run unit tests
+      - name: Run unit tests
+        run: npm test
+
+    # step 11: upload coverage reports
+      - name: Upload coverage report
+        if: success()
+        uses: actions/upload-artifact@v3
+        with: 
+          name: coverage-report
+          path: coverage
+
+    # Step 12: Run ESLint (step for linting)
+      - name: Run ESLint
+        run: npm run lint
