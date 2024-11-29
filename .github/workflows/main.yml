@@ -78,7 +78,8 @@ jobs:
     # Step 8: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/checkout@v3
-        with: node-version: '18'
+        with: 
+          node-version: '18'
 
     # step 9: Install dependencies
       - name: Install dependencies
