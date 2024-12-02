@@ -17,6 +17,6 @@ app.get('/', (req, res) => {
 });
 
 app.set('port', process.env.GATEWAY_PORT);
-const server = app.listen(app.get('port'), () => {
+app.listen(app.get('port'), () => {
   console.log(`API Gateway listening at http://localhost:${port}`);
 });
