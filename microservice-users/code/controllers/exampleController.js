@@ -6,8 +6,8 @@ export async function responseUsers(req, res) {
 
 export async function updateUser(req, res) {
   const db = req.app.get('db');
-  let { id, userPreferenceID, email, userImage, name, coins } = req.query;
-  await db.execute('INSERT INTO users (userID, userPreferenceID, email, userImage, name, coins) VALUES (?, ?, ?, ?, ?, ?)', [id, userPreferenceID, email, userImage, name, coins]);
+  let { id, email, userImage, name, coins, userMinutes } = req.query;
+  await db.execute('INSERT INTO users (userID, email, userImage, name, coins, userMinutes) VALUES (?, ?, ?, ?, ?, ?)', [id, email, userImage, name, coins, userMinutes]);
   res.status(201).send(`User added: ${JSON.stringify(req.query)}`);
 }
 
