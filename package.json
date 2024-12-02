@@ -15,6 +15,6 @@
 
   "scripts": {
     "dev": "nodemon start.js",
-    "lint": "eslint microservice1/code/*.js microservice2/code/*.js microservice3/code/*.js microservice4/code/*.js microservice5/code/*.js microservice6/code/*.js"
+    "lint": "eslint 'microservice*/code/*.js' 'apigateway/code/*.js'"
   }
 }
