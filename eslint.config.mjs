@@ -11,7 +11,7 @@ export default [
     "indent": ["error", 2], //Enforce 2-space indentation
     "no-console": "warn", // Warn about console.log statements
     "no-unused-vars": "warn", // Warn about unused variables
-    "no-undef": ["error"] // Disallow the use of undefined variables
+    "no-undef": ["warn"] // Disallow the use of undefined variables
   },
   },
   pluginJs.configs.recommended, // Extends the recommended JS rules

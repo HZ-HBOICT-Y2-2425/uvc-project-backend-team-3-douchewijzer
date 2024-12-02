@@ -65,15 +65,7 @@ jobs:
       # Step 7: Tear down Docker containers
       - name: Tear Down Docker Containers
         run: docker-compose down
-
-    # Notify Discord if the job fails
-      - name: test for failure
-        if: failure()
-        run: |
-          curl -X POST \
-          -H "Content-Type: application/json" \
-          -d '{"username": "GitHub Actions", "content": "🚨 Build Failed in CI/CD pipeline: Check the logs at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
-          ${{ secrets.DISCORD_WEBHOOK_URL }}
+        
     # Step 8: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/checkout@v3
@@ -87,3 +79,12 @@ jobs:
     # Step 12: Run ESLint (step for linting)
       - name: Run ESLint
         run: npm run lint
+
+            # Notify Discord if the job fails
+      - name: test for failure
+        if: failure()
+        run: |
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -d '{"username": "GitHub Actions", "content": "🚨 Build Failed in CI/CD pipeline: Check the logs at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
