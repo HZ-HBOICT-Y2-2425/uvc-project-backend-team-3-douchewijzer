@@ -17,6 +17,14 @@ try {
     database: process.env.DB_NAME
   });
   app.set('db', db);
+
+  // Check if there is data in the shop table and insert default values if empty
+  const [rows] = await db.execute('SELECT * FROM shop');
+  if (rows.length === 0) {
+    await db.execute('INSERT INTO shop (itemID, itemPrice, itemImage) VALUES (?, ?, ?)', [1, 0, 'default.jpg']);
+    console.log('Inserted default row into shop table');
+  }
+
 } catch (error) {
   console.error('Unable to connect to the database:', error);
   console.error('Host:', process.env.DB_HOST);
