@@ -25,6 +25,23 @@ export async function updateUser(req, res) {
 
   try {
     await db.execute('INSERT INTO users (email, userImage, name, password, coins, userMinutes) VALUES (?, ?, ?, ?, ?, ?)', [email, userImage, name, password, coins, userMinutes]);
+    
+    // Get the newly inserted userID
+    const [result] = await db.execute('SELECT LAST_INSERT_ID() as userID');
+    const userID = result[0].userID;
+
+    // Insert default rows into related tables
+    await db.execute('INSERT INTO user_preference (userID) VALUES (?)', [userID]);
+    await db.execute('INSERT INTO statistics (userID) VALUES (?)', [userID]);
+    await db.execute('INSERT INTO milestone (userID) VALUES (?)', [userID]);
+    await db.execute('INSERT INTO goals (userID) VALUES (?)', [userID]);
+
+    // Check if default item exists in shop table
+    const [shopItem] = await db.execute('SELECT itemID FROM shop WHERE itemID = 1');
+    if (shopItem.length > 0) {
+      await db.execute('INSERT INTO owned_items (userID, itemID, itemPrice) VALUES (?, 1, 0)', [userID]); // Assuming default itemID is 1 and itemPrice is 0
+    }
+
     res.status(201).send(`User added: ${JSON.stringify(req.query)}`);
   } catch (error) {
     console.error('Error inserting user:', error);
