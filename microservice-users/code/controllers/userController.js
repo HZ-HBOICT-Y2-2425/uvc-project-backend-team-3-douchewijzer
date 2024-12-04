@@ -116,7 +116,7 @@ export async function updateUser(req, res) {
     res.status(200).send('User updated successfully.');
   } catch (error) {
     console.error('Error updating user:', error);
-    res.status(500).send('An error occurred while updating the user.');
+    res.status(500).send(`An error occurred while updating the user: ${error.message}`);
   }
 }
 
