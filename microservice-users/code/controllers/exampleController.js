@@ -9,7 +9,7 @@ export async function listUsers(req, res) {
   }
 }
 
-export async function updateUser(req, res) {
+export async function addUser(req, res) {
   const db = req.app.get('db');
   let { email, userImage, name, password, coins, userMinutes } = req.query;
 
@@ -64,7 +64,7 @@ export async function listUserPreferences(req, res) {
   }
 }
 
-export async function updateUserPreference(req, res) {
+export async function addUserPreference(req, res) {
   const db = req.app.get('db');
   let { userID, leaderbordNotificationPreference, leaderbordUploadPreference, timerSetting, equipped_item } = req.query;
 
@@ -99,7 +99,7 @@ export async function listOwnedItems(req, res) {
   }
 }
 
-export async function updateOwnedItems(req, res) {
+export async function addOwnedItems(req, res) {
   const db = req.app.get('db');
   let { userID, itemID, itemPrice } = req.query;
 
