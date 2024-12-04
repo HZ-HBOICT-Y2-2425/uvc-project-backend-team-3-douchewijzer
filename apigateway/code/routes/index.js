@@ -4,7 +4,6 @@ const router = express.Router();
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '../../.env' }); // Updated path
 
-console.log('USERS_PORT:', process.env.USERS_PORT);
 // create a proxy for each microservice
 const microserviceUsers = createProxyMiddleware({
   target: `http://microservice-users:${process.env.USERS_PORT}`, 

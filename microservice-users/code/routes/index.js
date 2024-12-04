@@ -1,17 +1,15 @@
 import express from 'express';
-import { responseUsers, updateUser, responseUserPreferences, updateUserPreference } from '../controllers/exampleController.js';
+import { listUsers, updateUser, listUserPreferences, updateUserPreference, listOwnedItems, updateOwnedItems } from '../controllers/exampleController.js';
 import { checkName } from '../middleware/exampleMiddleware.js';
 const router = express.Router();
 
-// routes
-router.get('/', (req, res, next) => {
-  res.json('UsersController');
-});
 
-router.get('/users', responseUsers);
-router.post('/users', updateUser);
+router.get('/', listUsers);
+router.post('/update', updateUser);
 
-router.get('/user-preferences', responseUserPreferences);
-router.post('/user-preferences', updateUserPreference);
+router.get('/preferences', listUserPreferences);
+router.post('/preferences/update', updateUserPreference);
 
+router.get('/owned-items', listOwnedItems);
+router.post('/owned-items/update', updateOwnedItems);
 export default router;
