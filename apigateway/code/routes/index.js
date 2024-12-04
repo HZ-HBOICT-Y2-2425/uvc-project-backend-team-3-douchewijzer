@@ -25,16 +25,11 @@ const microserviceShop = createProxyMiddleware({
   changeOrigin: true
 });
 
-const microserviceTimer = createProxyMiddleware({
-  target: `http://microservice-timer:${process.env.TIMER_PORT}`, 
-  changeOrigin: true
-});
 
 
 router.use('/users', microserviceUsers);
 router.use('/goalsMilestones', microserviceGoalsMilestones);
 router.use('/statistics', microserviceStatistics);
 router.use('/shop', microserviceShop);
-router.use('/timer', microserviceTimer);
 
 export default router;

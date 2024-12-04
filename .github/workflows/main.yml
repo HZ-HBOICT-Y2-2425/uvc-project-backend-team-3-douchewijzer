@@ -42,7 +42,6 @@ jobs:
           echo "GATEWAY_PORT=${{ secrets.GATEWAY_PORT }}" >> .env
           echo "STATISTICS_PORT=${{ secrets.STATISTICS_PORT }}" >> .env
           echo "SHOP_PORT=${{ secrets.SHOP_PORT }}" >> .env
-          echo "TIMER_PORT=${{ secrets.TIMER_PORT }}" >> .env
 
       # Step 4: Build and start the Docker containers
       - name: Build and Start Docker Compose
@@ -59,7 +58,6 @@ jobs:
           curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/shop || exit 1
           curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/goalsMilestones || exit 1
           curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/statistics || exit 1
-          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/timer || exit 1
           echo "API Gateway is up and running"
 
       # Step 7: Tear down Docker containers
@@ -68,7 +66,7 @@ jobs:
         
     # Step 8: Set up Node.js environment
       - name: Set up Node.js
-        uses: actions/checkout@v3
+        uses: actions/setup-node@v3
         with: 
           node-version: '18'
 
