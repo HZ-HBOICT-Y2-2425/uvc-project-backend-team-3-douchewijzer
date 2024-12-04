@@ -7,13 +7,13 @@ services:
     env_file:
       - ./.env    
 
-  microservice-timer:
-    build: ./microservice-timer
-    volumes:
-      - ./microservice-timer/code:/code
-      - /code/node_modules
-    env_file:
-      - ./.env    
+  # microservice-timer:
+  #   build: ./microservice-timer
+  #   volumes:
+  #     - ./microservice-timer/code:/code
+  #     - /code/node_modules
+  #   env_file:
+  #     - ./.env    
 
   microservice-statistics:
     build: ./microservice-statistics
@@ -50,7 +50,6 @@ services:
       - "${GATEWAY_PORT}:${GATEWAY_PORT}" # Only expose the API Gateway
     depends_on:
       - microservice-users
-      - microservice-timer
       - microservice-statistics
       - microservice-shop
       - microservice-goals-milestones

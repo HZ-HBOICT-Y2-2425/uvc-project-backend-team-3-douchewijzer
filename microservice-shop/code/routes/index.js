@@ -1,14 +1,13 @@
 import express from 'express';
-import { responseShop, updateShop } from '../controllers/exampleController.js';
-import { checkName } from '../middleware/exampleMiddleware.js';
+import { responseShop, deleteShop, changeShop, getShopItem } from '../controllers/shopController.js';
+// import { checkName } from '../middleware/exampleMiddleware.js';
 const router = express.Router();
 
 // routes
-router.get('/', (req, res, next) => {
-  res.json('ShopController');
-});
+router.get('/', responseShop);
 
-router.get('/shop', responseShop);
-router.post('/shop', updateShop);
+router.get('/:itemID', getShopItem);
+router.put('/:itemID/update', changeShop);
+router.delete('/:itemID/delete', deleteShop);
 
 export default router;

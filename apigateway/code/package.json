@@ -8,6 +8,7 @@
     "dev": "nodemon start.js"
   },
   "nodemonConfig": {
+    "legacyWatch": true,
     "ignore": [
       "db.json"
     ]
