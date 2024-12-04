@@ -1,15 +1,25 @@
 import express from 'express';
-import { listUsers, addUser, listUserPreferences, addUserPreference, listOwnedItems, addOwnedItems } from '../controllers/exampleController.js';
-import { checkName } from '../middleware/exampleMiddleware.js';
+import { listUsers, addUser, getUser, updateUser, deleteUser } from '../controllers/userController.js';
+import { listUserPreferences, getUserPreferences, updateUserPreferences } from '..//controllers/preferencesController.js';
+import { listOwnedItems, getOwnedItems, updateOwnedItems } from '..//controllers/ownedItemsController.js';
+// import { checkName } from '..//middleware/exampleMiddleware.js';
 const router = express.Router();
-
 
 router.get('/', listUsers);
 router.post('/add', addUser);
 
 router.get('/preferences', listUserPreferences);
-router.post('/preferences/add', addUserPreference);
 
 router.get('/owned-items', listOwnedItems);
-router.post('/owned-items/add', addOwnedItems);
+
+router.get('/:userID', getUser);
+router.get('/:userID/preferences', getUserPreferences);
+router.get('/:userID/owned-items', getOwnedItems);
+
+router.put('/:userID', updateUser);
+router.put('/:userID/preferences', updateUserPreferences);
+router.put('/:userID/owned-items', updateOwnedItems);
+
+router.delete('/:userID', deleteUser);
+
 export default router;
