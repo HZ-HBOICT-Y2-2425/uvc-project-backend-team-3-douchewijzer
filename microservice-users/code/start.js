@@ -8,22 +8,24 @@ const app = express();
 
 // MySQL database connection
 let db;
-try {
-  db = await mysql.createConnection({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-  });
-  app.set('db', db);
-} catch (error) {
-  console.error('Unable to connect to the database:', error);
-  console.error('Host:', process.env.DB_HOST);
-  console.error('Port:', process.env.DB_PORT);
-  console.error('User:', process.env.DB_USER);
-  process.exit(1);
-}
+(async () => {
+  try {
+    db = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME
+    });
+    app.set('db', db);
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+    console.error('Host:', process.env.DB_HOST);
+    console.error('Port:', process.env.DB_PORT);
+    console.error('User:', process.env.DB_USER);
+    process.exit(1);
+  }
+})();
 
 // support json encoded and url-encoded bodies, mainly used for post and update
 app.use(express.json());

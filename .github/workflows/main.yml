@@ -42,6 +42,7 @@ jobs:
           echo "GATEWAY_PORT=${{ secrets.GATEWAY_PORT }}" >> .env
           echo "STATISTICS_PORT=${{ secrets.STATISTICS_PORT }}" >> .env
           echo "SHOP_PORT=${{ secrets.SHOP_PORT }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
 
       # Step 4: Build and start the Docker containers
       - name: Build and Start Docker Compose
