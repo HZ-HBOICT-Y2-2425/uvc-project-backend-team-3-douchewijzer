@@ -1,3 +1,6 @@
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
 export async function listUsers(req, res) {
   const db = req.app.get('db');
   try {
@@ -18,13 +21,16 @@ export async function addUser(req, res) {
     return res.status(400).send('Email, name, and password are required.');
   }
 
+  // Hash the password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   // Use null for optional fields if they are not provided
   userImage = userImage || null;
   coins = coins ? parseInt(coins, 10) : null;
   userMinutes = userMinutes ? parseInt(userMinutes, 10) : null;
 
   try {
-    await db.execute('INSERT INTO users (email, userImage, name, password, coins, userMinutes) VALUES (?, ?, ?, ?, ?, ?)', [email, userImage, name, password, coins, userMinutes]);
+    await db.execute('INSERT INTO users (email, userImage, name, password, coins, userMinutes) VALUES (?, ?, ?, ?, ?, ?)', [email, userImage, name, hashedPassword, coins, userMinutes]);
     
     // Get the newly inserted userID
     const [result] = await db.execute('SELECT LAST_INSERT_ID() as userID');
@@ -34,13 +40,17 @@ export async function addUser(req, res) {
     await db.execute('INSERT INTO user_preference (userID) VALUES (?)', [userID]);
     await db.execute('INSERT INTO statistics (userID) VALUES (?)', [userID]);
 
+    // Insert default rows into goals and milestones tables
+    await db.execute('INSERT INTO goals (userID) VALUES (?)', [userID]);
+    await db.execute('INSERT INTO milestone (userID) VALUES (?)', [userID]);
+
     // Check if default item exists in shop table
     const [shopItem] = await db.execute('SELECT itemID FROM shop WHERE itemID = 1');
     if (shopItem.length > 0) {
       await db.execute('INSERT INTO owned_items (userID, itemID, itemPrice) VALUES (?, 1, 0)', [userID]); // Assuming default itemID is 1 and itemPrice is 0
     }
 
-    res.status(201).send(`User added: ${JSON.stringify(req.query)}`);
+    res.status(201).send(`User added: ID: ${userID} ${JSON.stringify(req.query)}`);
   } catch (error) {
     console.error('Error inserting user:', error);
     if (error.code === 'ER_DUP_ENTRY') {
@@ -48,6 +58,30 @@ export async function addUser(req, res) {
     } else {
       res.status(500).send('An error occurred while adding the user.');
     }
+  }
+}
+
+export async function loginUser(req, res) {
+  const db = req.app.get('db');
+  const { email, password } = req.query;
+
+  try {
+    const [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
+    if (rows.length === 0) {
+      return res.status(404).send('Email not found.');
+    }
+
+    const user = rows[0];
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).send('Invalid password.');
+    }
+
+    const token = jwt.sign({ userID: user.userID }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(200).send({ token });
+  } catch (error) {
+    console.error('Error logging in user:', error);
+    res.status(500).send('An error occurred while logging in the user.');
   }
 }
 
@@ -69,7 +103,7 @@ export async function getUser(req, res) {
 export async function updateUser(req, res) {
   const db = req.app.get('db');
   const { userID } = req.params;
-  const { email, userImage, name, password, coins, userMinutes } = { ...req.body, ...req.query };
+  const { email, userImage, name, password, coins, userMinutes } = req.query;
 
   // Build the query dynamically based on provided fields
   const fields = [];
@@ -88,8 +122,9 @@ export async function updateUser(req, res) {
     values.push(name);
   }
   if (password !== undefined) {
+    const hashedPassword = await bcrypt.hash(password, 10);
     fields.push('password = ?');
-    values.push(password);
+    values.push(hashedPassword);
   }
   if (coins !== undefined) {
     fields.push('coins = ?');

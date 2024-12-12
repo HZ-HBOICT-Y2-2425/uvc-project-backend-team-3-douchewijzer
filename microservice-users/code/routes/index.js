@@ -1,12 +1,14 @@
 import express from 'express';
-import { listUsers, addUser, getUser, updateUser, deleteUser } from '../controllers/userController.js';
-import { listUserPreferences, getUserPreferences, updateUserPreferences } from '..//controllers/preferencesController.js';
-import { listOwnedItems, getOwnedItems, updateOwnedItems } from '..//controllers/ownedItemsController.js';
-// import { checkName } from '..//middleware/exampleMiddleware.js';
+import { listUsers, addUser, getUser, updateUser, deleteUser, loginUser } from '../controllers/userController.js';
+import { listUserPreferences, getUserPreferences, updateUserPreferences } from '../controllers/preferencesController.js';
+import { listOwnedItems, getOwnedItems, updateOwnedItems } from '../controllers/ownedItemsController.js';
+// import { checkName } from '../middleware/exampleMiddleware.js';
+
 const router = express.Router();
 
 router.get('/', listUsers);
-router.post('/add', addUser);
+router.post('/register', addUser);
+router.post('/login', loginUser);
 
 router.get('/preferences', listUserPreferences);
 
