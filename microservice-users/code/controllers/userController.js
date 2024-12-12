@@ -18,7 +18,7 @@ export async function addUser(req, res) {
 
   // Validate required fields
   if (!email || !name || !password) {
-    return res.status(400).send('Email, name, and password are required.');
+    return res.status(400).json({ error: 'Email, name, and password are required.' });
   }
 
   // Hash the password
@@ -49,14 +49,16 @@ export async function addUser(req, res) {
     if (shopItem.length > 0) {
       await db.execute('INSERT INTO owned_items (userID, itemID, itemPrice) VALUES (?, 1, 0)', [userID]); // Assuming default itemID is 1 and itemPrice is 0
     }
+    // Generate JWT token
+    const token = jwt.sign({ userID }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    res.status(201).send(`User added: ID: ${userID} ${JSON.stringify(req.query)}`);
-  } catch (error) {
+    res.status(201).json({ message: 'User registered successfully.', token, userID });
+    } catch (error) {
     console.error('Error inserting user:', error);
     if (error.code === 'ER_DUP_ENTRY') {
-      res.status(409).send('Duplicate entry for email.');
+      res.status(409).json({ error: 'Duplicate entry for email.' });
     } else {
-      res.status(500).send('An error occurred while adding the user.');
+      res.status(500).json({ error: 'An error occurred while adding the user.' });
     }
   }
 }
@@ -68,20 +70,39 @@ export async function loginUser(req, res) {
   try {
     const [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
     if (rows.length === 0) {
-      return res.status(404).send('Email not found.');
+      return res.status(404).json({ error: 'Email not found.' });
     }
 
     const user = rows[0];
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).send('Invalid password.');
+      return res.status(401).json({ error: 'Invalid password.' });
     }
 
     const token = jwt.sign({ userID: user.userID }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.status(200).send({ token });
+    res.status(200).json({ token, userID: user.userID });
   } catch (error) {
     console.error('Error logging in user:', error);
-    res.status(500).send('An error occurred while logging in the user.');
+    res.status(500).json({ error: 'An error occurred while logging in the user.' });
+  }
+}
+
+export async function verifyToken(req, res) {
+  const token = req.headers['authorization'].split(' ')[1];
+  const { userID } = req.query;
+
+  if (!token) {
+    return res.status(401).send('Access Denied');
+  }
+
+  try {
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    if (verified.userID !== parseInt(userID, 10)) {
+      return res.status(400).send('Invalid User ID');
+    }
+    res.status(200).send('Token is valid');
+  } catch (err) {
+    res.status(400).send('Invalid Token');
   }
 }
 
