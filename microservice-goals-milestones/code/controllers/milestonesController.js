@@ -1,7 +1,20 @@
+async function executeQuery(db, query, params) {
+  try {
+    return await db.execute(query, params);
+  } catch (error) {
+    if (error.message.includes('closed state')) {
+      console.error('Database connection was closed. Reconnecting...');
+      await db.connect();
+      return await db.execute(query, params);
+    }
+    throw error;
+  }
+}
+
 export async function responseMilestones(req, res) {
   const db = req.app.get('db');
   try {
-    const [rows] = await db.execute('SELECT * FROM milestone');
+    const [rows] = await executeQuery(db, 'SELECT * FROM milestone');
     res.status(200).send(rows);
   } catch (error) {
     console.error('Error fetching milestones:', error);
@@ -13,7 +26,7 @@ export async function responseMilestonesByUser(req, res) {
   const db = req.app.get('db');
   const { userID } = req.params;
   try {
-    const [rows] = await db.execute('SELECT * FROM milestone WHERE userID = ?', [userID]);
+    const [rows] = await executeQuery(db, 'SELECT * FROM milestone WHERE userID = ?', [userID]);
     res.status(200).send(rows);
   } catch (error) {
     console.error('Error fetching milestones by user:', error);
@@ -59,7 +72,7 @@ export async function updateMilestoneById(req, res) {
   const query = `UPDATE milestone SET ${fields.join(', ')} WHERE milestoneID = ?`;
 
   try {
-    const [result] = await db.execute(query, values);
+    const [result] = await executeQuery(db, query, values);
     if (result.affectedRows === 0) {
       return res.status(404).send('Milestone not found.');
     }
@@ -74,7 +87,7 @@ export async function deleteMilestoneById(req, res) {
   const db = req.app.get('db');
   const { milestoneID } = req.params;
   try {
-    await db.execute('DELETE FROM milestone WHERE milestoneID = ?', [milestoneID]);
+    await executeQuery(db, 'DELETE FROM milestone WHERE milestoneID = ?', [milestoneID]);
     res.status(200).send(`Milestone deleted with ID: ${milestoneID}`);
   } catch (error) {
     console.error('Error deleting milestone:', error);
@@ -91,7 +104,7 @@ export async function addMilestone(req, res) {
   }
 
   try {
-    await db.execute('INSERT INTO milestone (userID, coinValue, dataType, milestoneAmount, milestoneProgress) VALUES (?, ?, ?, ?, ?)', [userID, coinValue, dataType, milestoneAmount, milestoneProgress]);
+    await executeQuery(db, 'INSERT INTO milestone (userID, coinValue, dataType, milestoneAmount, milestoneProgress) VALUES (?, ?, ?, ?, ?)', [userID, coinValue, dataType, milestoneAmount, milestoneProgress]);
     res.status(201).send('Milestone added successfully.');
   } catch (error) {
     if (error.code === 'ER_NO_REFERENCED_ROW_2') {

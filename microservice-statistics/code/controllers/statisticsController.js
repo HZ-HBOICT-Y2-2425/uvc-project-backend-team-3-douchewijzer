@@ -1,7 +1,20 @@
+async function executeQuery(db, query, params) {
+  try {
+    return await db.execute(query, params);
+  } catch (error) {
+    if (error.message.includes('closed state')) {
+      console.error('Database connection was closed. Reconnecting...');
+      await db.connect();
+      return await db.execute(query, params);
+    }
+    throw error;
+  }
+}
+
 export async function responseStatistics(req, res) {
   const db = req.app.get('db');
   try {
-    const [rows] = await db.execute('SELECT * FROM statistics');
+    const [rows] = await executeQuery(db, 'SELECT * FROM statistics');
     res.status(200).send(rows);
   } catch (error) {
     console.error('Error fetching statistics:', error);
@@ -13,7 +26,7 @@ export async function getStatisticsByUser(req, res) {
   const db = req.app.get('db');
   const { userID } = req.params;
   try {
-    const [rows] = await db.execute('SELECT * FROM statistics WHERE userID = ?', [userID]);
+    const [rows] = await executeQuery(db, 'SELECT * FROM statistics WHERE userID = ?', [userID]);
     if (rows.length === 0) {
       return res.status(404).send(`No statistics found for user ID: ${userID}`);
     }
@@ -79,7 +92,7 @@ export async function updateStatisticByUser(req, res) {
   const query = `UPDATE statistics SET ${fields.join(', ')} WHERE userID = ?`;
 
   try {
-    const [result] = await db.execute(query, values);
+    const [result] = await executeQuery(db, query, values);
     if (result.affectedRows === 0) {
       return res.status(404).send(`No statistics found for user ID: ${userID}`);
     }

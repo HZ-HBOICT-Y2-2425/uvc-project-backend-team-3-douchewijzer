@@ -1,7 +1,20 @@
+async function executeQuery(db, query, params) {
+  try {
+    return await db.execute(query, params);
+  } catch (error) {
+    if (error.message.includes('closed state')) {
+      console.error('Database connection was closed. Reconnecting...');
+      await db.connect();
+      return await db.execute(query, params);
+    }
+    throw error;
+  }
+}
+
 export async function responseShop(req, res) {
   const db = req.app.get('db');
   try {
-    const [rows] = await db.execute('SELECT * FROM shop');
+    const [rows] = await executeQuery(db, 'SELECT * FROM shop');
     res.status(200).send(rows);
   } catch (error) {
     console.error('Error fetching shop items:', error);
@@ -35,7 +48,7 @@ export async function changeShop(req, res) {
   const query = `UPDATE shop SET ${fields.join(', ')} WHERE itemID = ?`;
 
   try {
-    const [result] = await db.execute(query, values);
+    const [result] = await executeQuery(db, query, values);
     if (result.affectedRows === 0) {
       return res.status(404).send('Shop item not found.');
     }
@@ -50,7 +63,7 @@ export async function deleteShop(req, res) {
   const db = req.app.get('db');
   const { itemID } = req.params;
   try {
-    const [result] = await db.execute('DELETE FROM shop WHERE itemID = ?', [itemID]);
+    const [result] = await executeQuery(db, 'DELETE FROM shop WHERE itemID = ?', [itemID]);
     if (result.affectedRows === 0) {
       return res.status(404).send('Shop item not found.');
     }
@@ -65,7 +78,7 @@ export async function getShopItem(req, res) {
   const db = req.app.get('db');
   const { itemID } = req.params;
   try {
-    const [rows] = await db.execute('SELECT * FROM shop WHERE itemID = ?', [itemID]);
+    const [rows] = await executeQuery(db, 'SELECT * FROM shop WHERE itemID = ?', [itemID]);
     if (rows.length === 0) {
       return res.status(404).send('Shop item not found.');
     }
