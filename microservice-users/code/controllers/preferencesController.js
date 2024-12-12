@@ -1,7 +1,20 @@
+async function executeQuery(db, query, params) {
+  try {
+    return await db.execute(query, params);
+  } catch (error) {
+    if (error.message.includes('closed state')) {
+      console.error('Database connection was closed. Reconnecting...');
+      await db.connect();
+      return await db.execute(query, params);
+    }
+    throw error;
+  }
+}
+
 export async function listUserPreferences(req, res) {
   const db = req.app.get('db');
   try {
-    const [rows] = await db.execute('SELECT * FROM user_preference');
+    const [rows] = await executeQuery(db, 'SELECT * FROM user_preference');
     res.status(200).send(rows);
   } catch (error) {
     console.error('Error listing user preferences:', error);
@@ -9,12 +22,11 @@ export async function listUserPreferences(req, res) {
   }
 }
 
-
 export async function getUserPreferences(req, res) {
   const db = req.app.get('db');
   const { userID } = req.params;
   try {
-    const [rows] = await db.execute('SELECT * FROM user_preference WHERE userID = ?', [userID]);
+    const [rows] = await executeQuery(db, 'SELECT * FROM user_preference WHERE userID = ?', [userID]);
     if (rows.length === 0) {
       return res.status(404).send('User preferences not found.');
     }
@@ -31,7 +43,7 @@ export async function updateUserPreferences(req, res) {
   const { leaderbordNotificationPreference, leaderbordUploadPreference, timerSetting, equipped_item } = req.body;
 
   try {
-    const [result] = await db.execute('UPDATE user_preference SET leaderbordNotificationPreference = ?, leaderbordUploadPreference = ?, timerSetting = ?, equipped_item = ? WHERE userID = ?', [leaderbordNotificationPreference, leaderbordUploadPreference, timerSetting, equipped_item, userID]);
+    const [result] = await executeQuery(db, 'UPDATE user_preference SET leaderbordNotificationPreference = ?, leaderbordUploadPreference = ?, timerSetting = ?, equipped_item = ? WHERE userID = ?', [leaderbordNotificationPreference, leaderbordUploadPreference, timerSetting, equipped_item, userID]);
     if (result.affectedRows === 0) {
       return res.status(404).send('User preferences not found.');
     }

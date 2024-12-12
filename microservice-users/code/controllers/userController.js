@@ -1,10 +1,23 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
+async function executeQuery(db, query, params) {
+  try {
+    return await db.execute(query, params);
+  } catch (error) {
+    if (error.message.includes('closed state')) {
+      console.error('Database connection was closed. Reconnecting...');
+      await db.connect();
+      return await db.execute(query, params);
+    }
+    throw error;
+  }
+}
+
 export async function listUsers(req, res) {
   const db = req.app.get('db');
   try {
-    const [rows] = await db.execute('SELECT * FROM users');
+    const [rows] = await executeQuery(db, 'SELECT * FROM users');
     res.status(200).send(rows);
   } catch (error) {
     console.error('Error listing users:', error);
@@ -30,24 +43,24 @@ export async function addUser(req, res) {
   userMinutes = userMinutes ? parseInt(userMinutes, 10) : null;
 
   try {
-    await db.execute('INSERT INTO users (email, userImage, name, password, coins, userMinutes) VALUES (?, ?, ?, ?, ?, ?)', [email, userImage, name, hashedPassword, coins, userMinutes]);
+    await executeQuery(db, 'INSERT INTO users (email, userImage, name, password, coins, userMinutes) VALUES (?, ?, ?, ?, ?, ?)', [email, userImage, name, hashedPassword, coins, userMinutes]);
     
     // Get the newly inserted userID
-    const [result] = await db.execute('SELECT LAST_INSERT_ID() as userID');
+    const [result] = await executeQuery(db, 'SELECT LAST_INSERT_ID() as userID');
     const userID = result[0].userID;
 
     // Insert default rows into related tables
-    await db.execute('INSERT INTO user_preference (userID) VALUES (?)', [userID]);
-    await db.execute('INSERT INTO statistics (userID) VALUES (?)', [userID]);
+    await executeQuery(db, 'INSERT INTO user_preference (userID) VALUES (?)', [userID]);
+    await executeQuery(db, 'INSERT INTO statistics (userID) VALUES (?)', [userID]);
 
     // Insert default rows into goals and milestones tables
-    await db.execute('INSERT INTO goals (userID) VALUES (?)', [userID]);
-    await db.execute('INSERT INTO milestone (userID) VALUES (?)', [userID]);
+    await executeQuery(db, 'INSERT INTO goals (userID) VALUES (?)', [userID]);
+    await executeQuery(db, 'INSERT INTO milestone (userID) VALUES (?)', [userID]);
 
     // Check if default item exists in shop table
-    const [shopItem] = await db.execute('SELECT itemID FROM shop WHERE itemID = 1');
+    const [shopItem] = await executeQuery(db, 'SELECT itemID FROM shop WHERE itemID = 1');
     if (shopItem.length > 0) {
-      await db.execute('INSERT INTO owned_items (userID, itemID, itemPrice) VALUES (?, 1, 0)', [userID]); // Assuming default itemID is 1 and itemPrice is 0
+      await executeQuery(db, 'INSERT INTO owned_items (userID, itemID, itemPrice) VALUES (?, 1, 0)', [userID]); // Assuming default itemID is 1 and itemPrice is 0
     }
     // Generate JWT token
     const token = jwt.sign({ userID }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -68,7 +81,7 @@ export async function loginUser(req, res) {
   const { email, password } = req.query;
 
   try {
-    const [rows] = await db.execute('SELECT * FROM users WHERE email = ?', [email]);
+    const [rows] = await executeQuery(db, 'SELECT * FROM users WHERE email = ?', [email]);
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Email not found.' });
     }
@@ -110,7 +123,7 @@ export async function getUser(req, res) {
   const db = req.app.get('db');
   const { userID } = req.params;
   try {
-    const [rows] = await db.execute('SELECT * FROM users WHERE userID = ?', [userID]);
+    const [rows] = await executeQuery(db, 'SELECT * FROM users WHERE userID = ?', [userID]);
     if (rows.length === 0) {
       return res.status(404).send('User not found.');
     }
@@ -165,7 +178,7 @@ export async function updateUser(req, res) {
   const query = `UPDATE users SET ${fields.join(', ')} WHERE userID = ?`;
 
   try {
-    const [result] = await db.execute(query, values);
+    const [result] = await executeQuery(db, query, values);
     if (result.affectedRows === 0) {
       return res.status(404).send('User not found.');
     }
@@ -182,14 +195,14 @@ export async function deleteUser(req, res) {
 
   try {
     // Delete related rows in other tables
-    await db.execute('DELETE FROM user_preference WHERE userID = ?', [userID]);
-    await db.execute('DELETE FROM statistics WHERE userID = ?', [userID]);
-    await db.execute('DELETE FROM milestone WHERE userID = ?', [userID]);
-    await db.execute('DELETE FROM goals WHERE userID = ?', [userID]);
-    await db.execute('DELETE FROM owned_items WHERE userID = ?', [userID]);
+    await executeQuery(db, 'DELETE FROM user_preference WHERE userID = ?', [userID]);
+    await executeQuery(db, 'DELETE FROM statistics WHERE userID = ?', [userID]);
+    await executeQuery(db, 'DELETE FROM milestone WHERE userID = ?', [userID]);
+    await executeQuery(db, 'DELETE FROM goals WHERE userID = ?', [userID]);
+    await executeQuery(db, 'DELETE FROM owned_items WHERE userID = ?', [userID]);
 
     // Delete the user
-    const [result] = await db.execute('DELETE FROM users WHERE userID = ?', [userID]);
+    const [result] = await executeQuery(db, 'DELETE FROM users WHERE userID = ?', [userID]);
     if (result.affectedRows === 0) {
       return res.status(404).send('User not found.');
     }

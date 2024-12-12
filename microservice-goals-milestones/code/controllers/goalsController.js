@@ -1,7 +1,20 @@
+async function executeQuery(db, query, params) {
+  try {
+    return await db.execute(query, params);
+  } catch (error) {
+    if (error.message.includes('closed state')) {
+      console.error('Database connection was closed. Reconnecting...');
+      await db.connect();
+      return await db.execute(query, params);
+    }
+    throw error;
+  }
+}
+
 export async function responseGoals(req, res) {
   const db = req.app.get('db');
   try {
-    const [rows] = await db.execute('SELECT * FROM goals');
+    const [rows] = await executeQuery(db, 'SELECT * FROM goals');
     res.status(200).send(rows);
   } catch (error) {
     console.error('Error fetching goals:', error);
@@ -13,7 +26,7 @@ export async function responseGoalsByUser(req, res) {
   const db = req.app.get('db');
   const { userID } = req.params;
   try {
-    const [rows] = await db.execute('SELECT * FROM goals WHERE userID = ?', [userID]);
+    const [rows] = await executeQuery(db, 'SELECT * FROM goals WHERE userID = ?', [userID]);
     res.status(200).send(rows);
   } catch (error) {
     console.error('Error fetching goals by user:', error);
@@ -63,7 +76,7 @@ export async function updateGoalById(req, res) {
   const query = `UPDATE goals SET ${fields.join(', ')} WHERE goalID = ?`;
 
   try {
-    const [result] = await db.execute(query, values);
+    const [result] = await executeQuery(db, query, values);
     if (result.affectedRows === 0) {
       return res.status(404).send('Goal not found.');
     }
@@ -78,7 +91,7 @@ export async function deleteGoalById(req, res) {
   const db = req.app.get('db');
   const { goalID } = req.params;
   try {
-    await db.execute('DELETE FROM goals WHERE goalID = ?', [goalID]);
+    await executeQuery(db, 'DELETE FROM goals WHERE goalID = ?', [goalID]);
     res.status(200).send(`Goal deleted with ID: ${goalID}`);
   } catch (error) {
     console.error('Error deleting goal:', error);
@@ -95,7 +108,7 @@ export async function addGoal(req, res) {
   }
 
   try {
-    await db.execute('INSERT INTO goals (userID, goalAmount, coinValue, dataType, goalProgress) VALUES (?, ?, ?, ?, ?)', [userID, goalAmount, coinValue, dataType, goalProgress]);
+    await executeQuery(db, 'INSERT INTO goals (userID, goalAmount, coinValue, dataType, goalProgress) VALUES (?, ?, ?, ?, ?)', [userID, goalAmount, coinValue, dataType, goalProgress]);
     res.status(201).send('Goal added successfully.');
   } catch (error) {
     if (error.code === 'ER_NO_REFERENCED_ROW_2') {
