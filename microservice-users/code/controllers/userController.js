@@ -40,13 +40,17 @@ export async function addUser(req, res) {
     await db.execute('INSERT INTO user_preference (userID) VALUES (?)', [userID]);
     await db.execute('INSERT INTO statistics (userID) VALUES (?)', [userID]);
 
+    // Insert default rows into goals and milestones tables
+    await db.execute('INSERT INTO goals (userID) VALUES (?)', [userID]);
+    await db.execute('INSERT INTO milestone (userID) VALUES (?)', [userID]);
+
     // Check if default item exists in shop table
     const [shopItem] = await db.execute('SELECT itemID FROM shop WHERE itemID = 1');
     if (shopItem.length > 0) {
       await db.execute('INSERT INTO owned_items (userID, itemID, itemPrice) VALUES (?, 1, 0)', [userID]); // Assuming default itemID is 1 and itemPrice is 0
     }
 
-    res.status(201).send(`User added: ${JSON.stringify(req.query)}`);
+    res.status(201).send(`User added: ID: ${userID} ${JSON.stringify(req.query)}`);
   } catch (error) {
     console.error('Error inserting user:', error);
     if (error.code === 'ER_DUP_ENTRY') {
