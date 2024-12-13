@@ -6,18 +6,21 @@ import indexRouter from './routes/index.js';
 
 const app = express();
 
-// MySQL database connection
-let db;
+// MySQL database connection pool
+let pool;
 (async () => {
   try {
-    db = await mysql.createConnection({
+    pool = mysql.createPool({
       host: process.env.DB_HOST,
       port: process.env.DB_PORT,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME
+      database: process.env.DB_NAME,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0
     });
-    app.set('db', db);
+    app.set('db', pool);
   } catch (error) {
     console.error('Unable to connect to the database:', error);
     console.error('Host:', process.env.DB_HOST);
