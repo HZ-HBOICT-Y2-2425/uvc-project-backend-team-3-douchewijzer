@@ -1,23 +1,22 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-async function executeQuery(db, query, params) {
+async function executeQuery(pool, query, params) {
+  const connection = await pool.getConnection();
   try {
-    return await db.execute(query, params);
+    const [results] = await connection.execute(query, params);
+    return results;
   } catch (error) {
-    if (error.message.includes('closed state')) {
-      console.error('Database connection was closed. Reconnecting...');
-      await db.connect();
-      return await db.execute(query, params);
-    }
     throw error;
+  } finally {
+    connection.release();
   }
 }
 
 export async function listUsers(req, res) {
-  const db = req.app.get('db');
+  const pool = req.app.get('db');
   try {
-    const [rows] = await executeQuery(db, 'SELECT * FROM users');
+    const rows = await executeQuery(pool, 'SELECT * FROM users');
     res.status(200).send(rows);
   } catch (error) {
     console.error('Error listing users:', error);
@@ -26,7 +25,7 @@ export async function listUsers(req, res) {
 }
 
 export async function addUser(req, res) {
-  const db = req.app.get('db');
+  const pool = req.app.get('db');
   let { email, userImage, name, password, coins, userMinutes } = req.query;
 
   // Validate required fields
@@ -43,24 +42,24 @@ export async function addUser(req, res) {
   userMinutes = userMinutes ? parseInt(userMinutes, 10) : null;
 
   try {
-    await executeQuery(db, 'INSERT INTO users (email, userImage, name, password, coins, userMinutes) VALUES (?, ?, ?, ?, ?, ?)', [email, userImage, name, hashedPassword, coins, userMinutes]);
+    await executeQuery(pool, 'INSERT INTO users (email, userImage, name, password, coins, userMinutes) VALUES (?, ?, ?, ?, ?, ?)', [email, userImage, name, hashedPassword, coins, userMinutes]);
     
     // Get the newly inserted userID
-    const [result] = await executeQuery(db, 'SELECT LAST_INSERT_ID() as userID');
+    const result = await executeQuery(pool, 'SELECT LAST_INSERT_ID() as userID');
     const userID = result[0].userID;
 
     // Insert default rows into related tables
-    await executeQuery(db, 'INSERT INTO user_preference (userID) VALUES (?)', [userID]);
-    await executeQuery(db, 'INSERT INTO statistics (userID) VALUES (?)', [userID]);
+    await executeQuery(pool, 'INSERT INTO user_preference (userID) VALUES (?)', [userID]);
+    await executeQuery(pool, 'INSERT INTO statistics (userID) VALUES (?)', [userID]);
 
     // Insert default rows into goals and milestones tables
-    await executeQuery(db, 'INSERT INTO goals (userID) VALUES (?)', [userID]);
-    await executeQuery(db, 'INSERT INTO milestone (userID) VALUES (?)', [userID]);
+    await executeQuery(pool, 'INSERT INTO goals (userID) VALUES (?)', [userID]);
+    await executeQuery(pool, 'INSERT INTO milestone (userID) VALUES (?)', [userID]);
 
     // Check if default item exists in shop table
-    const [shopItem] = await executeQuery(db, 'SELECT itemID FROM shop WHERE itemID = 1');
+    const shopItem = await executeQuery(pool, 'SELECT itemID FROM shop WHERE itemID = 1');
     if (shopItem.length > 0) {
-      await executeQuery(db, 'INSERT INTO owned_items (userID, itemID, itemPrice) VALUES (?, 1, 0)', [userID]); // Assuming default itemID is 1 and itemPrice is 0
+      await executeQuery(pool, 'INSERT INTO owned_items (userID, itemID, itemPrice) VALUES (?, 1, 0)', [userID]); // Assuming default itemID is 1 and itemPrice is 0
     }
     // Generate JWT token
     const token = jwt.sign({ userID }, process.env.JWT_SECRET, { expiresIn: '1h' });
@@ -77,11 +76,11 @@ export async function addUser(req, res) {
 }
 
 export async function loginUser(req, res) {
-  const db = req.app.get('db');
+  const pool = req.app.get('db');
   const { email, password } = req.query;
 
   try {
-    const [rows] = await executeQuery(db, 'SELECT * FROM users WHERE email = ?', [email]);
+    const rows = await executeQuery(pool, 'SELECT * FROM users WHERE email = ?', [email]);
     if (rows.length === 0) {
       return res.status(404).json({ error: 'Email not found.' });
     }
@@ -120,10 +119,10 @@ export async function verifyToken(req, res) {
 }
 
 export async function getUser(req, res) {
-  const db = req.app.get('db');
+  const pool = req.app.get('db');
   const { userID } = req.params;
   try {
-    const [rows] = await executeQuery(db, 'SELECT * FROM users WHERE userID = ?', [userID]);
+    const rows = await executeQuery(pool, 'SELECT * FROM users WHERE userID = ?', [userID]);
     if (rows.length === 0) {
       return res.status(404).send('User not found.');
     }
@@ -135,7 +134,7 @@ export async function getUser(req, res) {
 }
 
 export async function updateUser(req, res) {
-  const db = req.app.get('db');
+  const pool = req.app.get('db');
   const { userID } = req.params;
   const { email, userImage, name, password, coins, userMinutes } = req.query;
 
@@ -178,7 +177,7 @@ export async function updateUser(req, res) {
   const query = `UPDATE users SET ${fields.join(', ')} WHERE userID = ?`;
 
   try {
-    const [result] = await executeQuery(db, query, values);
+    const result = await executeQuery(pool, query, values);
     if (result.affectedRows === 0) {
       return res.status(404).send('User not found.');
     }
@@ -190,19 +189,19 @@ export async function updateUser(req, res) {
 }
 
 export async function deleteUser(req, res) {
-  const db = req.app.get('db');
+  const pool = req.app.get('db');
   const { userID } = req.params;
 
   try {
     // Delete related rows in other tables
-    await executeQuery(db, 'DELETE FROM user_preference WHERE userID = ?', [userID]);
-    await executeQuery(db, 'DELETE FROM statistics WHERE userID = ?', [userID]);
-    await executeQuery(db, 'DELETE FROM milestone WHERE userID = ?', [userID]);
-    await executeQuery(db, 'DELETE FROM goals WHERE userID = ?', [userID]);
-    await executeQuery(db, 'DELETE FROM owned_items WHERE userID = ?', [userID]);
+    await executeQuery(pool, 'DELETE FROM user_preference WHERE userID = ?', [userID]);
+    await executeQuery(pool, 'DELETE FROM statistics WHERE userID = ?', [userID]);
+    await executeQuery(pool, 'DELETE FROM milestone WHERE userID = ?', [userID]);
+    await executeQuery(pool, 'DELETE FROM goals WHERE userID = ?', [userID]);
+    await executeQuery(pool, 'DELETE FROM owned_items WHERE userID = ?', [userID]);
 
     // Delete the user
-    const [result] = await executeQuery(db, 'DELETE FROM users WHERE userID = ?', [userID]);
+    const result = await executeQuery(pool, 'DELETE FROM users WHERE userID = ?', [userID]);
     if (result.affectedRows === 0) {
       return res.status(404).send('User not found.');
     }
