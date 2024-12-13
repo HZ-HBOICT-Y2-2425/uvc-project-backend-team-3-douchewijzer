@@ -91,8 +91,8 @@ export async function loginUser(req, res) {
       return res.status(401).json({ error: 'Invalid password.' });
     }
 
-    const token = jwt.sign({ userID: user.userID }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.status(200).json({ token, userID: user.userID });
+    const token = jwt.sign({ userID: user.userID, name: user.name }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.status(200).json({ token });
   } catch (error) {
     console.error('Error logging in user:', error);
     res.status(500).json({ error: 'An error occurred while logging in the user.' });
@@ -101,7 +101,6 @@ export async function loginUser(req, res) {
 
 export async function verifyToken(req, res) {
   const token = req.headers['authorization'].split(' ')[1];
-  const { userID } = req.query;
 
   if (!token) {
     return res.status(401).send('Access Denied');
@@ -109,9 +108,6 @@ export async function verifyToken(req, res) {
 
   try {
     const verified = jwt.verify(token, process.env.JWT_SECRET);
-    if (verified.userID !== parseInt(userID, 10)) {
-      return res.status(400).send('Invalid User ID');
-    }
     res.status(200).send('Token is valid');
   } catch (err) {
     res.status(400).send('Invalid Token');
