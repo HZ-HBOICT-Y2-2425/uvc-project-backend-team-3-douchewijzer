@@ -1,17 +1,25 @@
 import express from 'express';
-import { responseMilestones, updateMilestone, responseGoals, updateGoals } from '../controllers/exampleController.js';
-import { checkName } from '../middleware/exampleMiddleware.js';
+import { responseMilestones, responseMilestonesByUser, updateMilestoneById, deleteMilestoneById, addMilestone } from '../controllers/milestonesController.js';
+import { responseGoals, responseGoalsByUser, updateGoalById, deleteGoalById, addGoal } from '../controllers/goalsController.js';
+// import { checkName } from '../middleware/exampleMiddleware.js';
 const router = express.Router();
 
-// routes
-router.get('/', (req, res, next) => {
-  res.json('GoalsMilestonesController');
+router.get('/', (req, res) => {
+  res.send('Microservice goals and milestones is running, use /milestones or /goals to access the data');
 });
-router.get('/milestones', responseMilestones);
-router.post('/milestones', updateMilestone);
 
+// Goals routes
 router.get('/goals', responseGoals);
-router.post('/goals', updateGoals);
+router.get('/goals/user/:userID', responseGoalsByUser);
+router.put('/goals/:goalID', updateGoalById);
+router.delete('/goals/:goalID', deleteGoalById);
+router.post('/goals', addGoal);
 
+// Milestones routes
+router.get('/milestones', responseMilestones);
+router.get('/milestones/user/:userID', responseMilestonesByUser);
+router.put('/milestones/:milestoneID', updateMilestoneById);
+router.delete('/milestones/:milestoneID', deleteMilestoneById);
+router.post('/milestones', addMilestone);
 
 export default router;

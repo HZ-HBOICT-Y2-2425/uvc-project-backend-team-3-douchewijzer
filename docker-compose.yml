@@ -7,13 +7,13 @@ services:
     env_file:
       - ./.env    
 
-  microservice-timer:
-    build: ./microservice-timer
-    volumes:
-      - ./microservice-timer/code:/code
-      - /code/node_modules
-    env_file:
-      - ./.env    
+  # microservice-timer:
+  #   build: ./microservice-timer
+  #   volumes:
+  #     - ./microservice-timer/code:/code
+  #     - /code/node_modules
+  #   env_file:
+  #     - ./.env    
 
   microservice-statistics:
     build: ./microservice-statistics
@@ -23,10 +23,10 @@ services:
     env_file:
       - ./.env    
 
-  microservice-shop:
-    build: ./microservice-shop
+  microservice-badges:
+    build: ./microservice-badges
     volumes:
-      - ./microservice-shop/code:/code
+      - ./microservice-badges/code:/code
       - /code/node_modules
     env_file:
       - ./.env    
@@ -50,9 +50,8 @@ services:
       - "${GATEWAY_PORT}:${GATEWAY_PORT}" # Only expose the API Gateway
     depends_on:
       - microservice-users
-      - microservice-timer
       - microservice-statistics
-      - microservice-shop
+      - microservice-badges
       - microservice-goals-milestones
 
 volumes:

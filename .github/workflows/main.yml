@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-22.04
+    runs-on: self-hosted
 
     steps:
       # Step 1: Check out the repository
@@ -41,8 +41,8 @@ jobs:
           echo "GOALS_MILESTONES_PORT=${{ secrets.GOALS_MILESTONES_PORT }}" >> .env
           echo "GATEWAY_PORT=${{ secrets.GATEWAY_PORT }}" >> .env
           echo "STATISTICS_PORT=${{ secrets.STATISTICS_PORT }}" >> .env
-          echo "SHOP_PORT=${{ secrets.SHOP_PORT }}" >> .env
-          echo "TIMER_PORT=${{ secrets.TIMER_PORT }}" >> .env
+          echo "BADGES_PORT=${{ secrets.BADGES_PORT }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
 
       # Step 4: Build and start the Docker containers
       - name: Build and Start Docker Compose
@@ -56,27 +56,18 @@ jobs:
       - name: Run API Gateway tests
         run: |
           curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/users || exit 1
-          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/shop || exit 1
+          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/badges || exit 1
           curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/goalsMilestones || exit 1
           curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/statistics || exit 1
-          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/timer || exit 1
           echo "API Gateway is up and running"
 
       # Step 7: Tear down Docker containers
       - name: Tear Down Docker Containers
         run: docker-compose down
-
-    # Notify Discord if the job fails
-      - name: test for failure
-        if: failure()
-        run: |
-          curl -X POST \
-          -H "Content-Type: application/json" \
-          -d '{"username": "GitHub Actions", "content": "🚨 Build Failed in CI/CD pipeline: Check the logs at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
-          ${{ secrets.DISCORD_WEBHOOK_URL }}
+        
     # Step 8: Set up Node.js environment
       - name: Set up Node.js
-        uses: actions/checkout@v3
+        uses: actions/setup-node@v3
         with: 
           node-version: '18'
 
@@ -87,3 +78,12 @@ jobs:
     # Step 12: Run ESLint (step for linting)
       - name: Run ESLint
         run: npm run lint
+
+            # Notify Discord if the job fails
+      - name: test for failure
+        if: failure()
+        run: |
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -d '{"username": "GitHub Actions", "content": "🚨 Build Failed in CI/CD pipeline: Check the logs at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
