@@ -24,7 +24,8 @@
     "lodash": "^4.17.21",
     "lowdb": "^7.0.1",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "http-proxy-middleware": "^3.0.3",

@@ -39,7 +39,7 @@ const swaggerOptions = {
     info: {
       title: 'Statistics Microservice',
       version: '1.0.0',
-      description: 'Microservice for managing statistics',
+      description: 'Statistics Microservice API Documentation',
     },
     servers: [
       {
@@ -51,7 +51,7 @@ const swaggerOptions = {
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs, { explorer: true }));
 app.get('/api-docs/swagger.json', (req, res) => {
   res.json(swaggerDocs);
 });

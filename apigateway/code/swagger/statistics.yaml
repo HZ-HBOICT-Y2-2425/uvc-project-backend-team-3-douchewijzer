@@ -1,0 +1,180 @@
+swagger: "2.0"
+info:
+  title: "Statistics Microservice API"
+  version: "1.0.0"
+paths:
+  /:
+    get:
+      summary: "Retrieve a list of statistics"
+      tags:
+        - Statistics
+      responses:
+        200:
+          description: "A list of statistics"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    userID:
+                      type: integer
+                      description: "The user ID"
+                    gasUsage:
+                      type: number
+                      description: "The gas usage"
+                    temperature:
+                      type: number
+                      description: "The temperature"
+                    currentCosts:
+                      type: number
+                      description: "The current costs"
+                    waterUsage:
+                      type: number
+                      description: "The water usage"
+                    carbonEmission:
+                      type: number
+                      description: "The carbon emission"
+                    totalCost:
+                      type: number
+                      description: "The total cost"
+                    totalGasUsage:
+                      type: number
+                      description: "The total gas usage"
+                    averageTemperature:
+                      type: number
+                      description: "The average temperature"
+                    totalWaterUsage:
+                      type: number
+                      description: "The total water usage"
+  /{userID}:
+    get:
+      summary: "Retrieve statistics for a specific user"
+      tags:
+        - Statistics
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          description: "The user ID"
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "Statistics for the user"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    userID:
+                      type: integer
+                      description: "The user ID"
+                    gasUsage:
+                      type: number
+                      description: "The gas usage"
+                    temperature:
+                      type: number
+                      description: "The temperature"
+                    currentCosts:
+                      type: number
+                      description: "The current costs"
+                    waterUsage:
+                      type: number
+                      description: "The water usage"
+                    carbonEmission:
+                      type: number
+                      description: "The carbon emission"
+                    totalCost:
+                      type: number
+                      description: "The total cost"
+                    totalGasUsage:
+                      type: number
+                      description: "The total gas usage"
+                    averageTemperature:
+                      type: number
+                      description: "The average temperature"
+                    totalWaterUsage:
+                      type: number
+                      description: "The total water usage"
+        404:
+          description: "No statistics found for the user"
+    put:
+      summary: "Update statistics for a specific user"
+      tags:
+        - Statistics
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          description: "The user ID"
+          schema:
+            type: integer
+        - in: body
+          name: statistics
+          description: "The new statistics"
+          schema:
+            type: object
+            properties:
+              gasUsage:
+                type: number
+              temperature:
+                type: number
+              currentCosts:
+                type: number
+              waterUsage:
+                type: number
+              carbonEmission:
+                type: number
+              totalCost:
+                type: number
+              totalGasUsage:
+                type: number
+              averageTemperature:
+                type: number
+              totalWaterUsage:
+                type: number
+      responses:
+        200:
+          description: "Statistics updated successfully"
+        400:
+          description: "No fields to update"
+        404:
+          description: "No statistics found for the user"
+definitions:
+  Statistic:
+    type: object
+    properties:
+      userID:
+        type: integer
+        description: "The user ID"
+      gasUsage:
+        type: number
+        description: "The gas usage"
+      temperature:
+        type: number
+        description: "The temperature"
+      currentCosts:
+        type: number
+        description: "The current costs"
+      waterUsage:
+        type: number
+        description: "The water usage"
+      carbonEmission:
+        type: number
+        description: "The carbon emission"
+      totalCost:
+        type: number
+        description: "The total cost"
+      totalGasUsage:
+        type: number
+        description: "The total gas usage"
+      averageTemperature:
+        type: number
+        description: "The average temperature"
+      totalWaterUsage:
+        type: number
+        description: "The total water usage"

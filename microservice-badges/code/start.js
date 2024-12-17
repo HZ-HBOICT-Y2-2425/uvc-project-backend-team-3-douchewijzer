@@ -3,7 +3,7 @@ import * as dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsDoc from 'swagger-jsdoc';
-dotenv.config({ path: '../../.env' }); // Updated path
+dotenv.config({ path: '../../.env' }); // Ensure this path matches the mounted volume path
 import indexRouter from './routes/index.js';
 
 const app = express();
@@ -40,28 +40,32 @@ let pool;
   }
 })();
 
-// Swagger setup
 const swaggerOptions = {
   swaggerDefinition: {
-    openapi: '3.0.0',
+    openapi: "3.0.0",
     info: {
-      title: 'Badges Microservice',
-      version: '1.0.0',
-      description: 'Microservice for managing badges',
+      title: "Microservice Badges API",
+      version: "1.0.0",
+      description: "Endpoints for Microservice Badges",
     },
     servers: [
       {
         url: `http://localhost:${process.env.BADGES_PORT}`,
+        description: "Microservice Local Server",
       },
     ],
   },
-  apis: ['./routes/*.js'], // Specify the files to read for Swagger annotations
+  apis: ["./routes/*.js"], // Path to local route files
 };
 
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-app.get('/api-docs/swagger.json', (req, res) => {
-  res.json(swaggerDocs);
+const swaggerSpecs = swaggerJsDoc(swaggerOptions);
+
+// Serve Swagger UI for the microservice
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+
+// Routes
+app.get("/data", (req, res) => {
+  res.json({ message: "Microservice data response" });
 });
 
 // support json encoded and url-encoded bodies, mainly used for post and update
