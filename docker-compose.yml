@@ -23,10 +23,10 @@ services:
     env_file:
       - ./.env    
 
-  microservice-shop:
-    build: ./microservice-shop
+  microservice-badges:
+    build: ./microservice-badges
     volumes:
-      - ./microservice-shop/code:/code
+      - ./microservice-badges/code:/code
       - /code/node_modules
     env_file:
       - ./.env    
@@ -51,7 +51,7 @@ services:
     depends_on:
       - microservice-users
       - microservice-statistics
-      - microservice-shop
+      - microservice-badges
       - microservice-goals-milestones
 
 volumes:

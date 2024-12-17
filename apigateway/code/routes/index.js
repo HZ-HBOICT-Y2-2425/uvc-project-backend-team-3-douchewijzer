@@ -20,8 +20,8 @@ const microserviceStatistics = createProxyMiddleware({
   changeOrigin: true
 });
 
-const microserviceShop = createProxyMiddleware({
-  target: `http://microservice-shop:${process.env.SHOP_PORT}`, 
+const microserviceBadges = createProxyMiddleware({
+  target: `http://microservice-badges:${process.env.BADGES_PORT}`, 
   changeOrigin: true
 });
 
@@ -30,6 +30,6 @@ const microserviceShop = createProxyMiddleware({
 router.use('/users', microserviceUsers);
 router.use('/goalsMilestones', microserviceGoalsMilestones);
 router.use('/statistics', microserviceStatistics);
-router.use('/shop', microserviceShop);
+router.use('/badges', microserviceBadges);
 
 export default router;

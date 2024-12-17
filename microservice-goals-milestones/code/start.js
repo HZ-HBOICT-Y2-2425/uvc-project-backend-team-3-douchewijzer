@@ -23,10 +23,10 @@ let pool;
     app.set('db', pool);
 
     // Check if there is data in the shop table and insert default values if empty
-    const [rows] = await pool.execute('SELECT * FROM shop');
+    const [rows] = await pool.execute('SELECT * FROM badges');
     if (rows.length === 0) {
-      await pool.execute('INSERT INTO shop (itemID, itemPrice, itemImage) VALUES (?, ?, ?)', [1, 0, 'default.jpg']);
-      console.log('Inserted default row into shop table');
+      await pool.execute('INSERT INTO badges (itemID, itemValue, itemImage) VALUES (?, ?, ?)', [1, 0, 'default.jpg']);
+      console.log('Inserted default row into badges table');
     }
 
   } catch (error) {

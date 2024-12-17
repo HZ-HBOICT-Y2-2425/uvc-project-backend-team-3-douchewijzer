@@ -41,7 +41,7 @@ jobs:
           echo "GOALS_MILESTONES_PORT=${{ secrets.GOALS_MILESTONES_PORT }}" >> .env
           echo "GATEWAY_PORT=${{ secrets.GATEWAY_PORT }}" >> .env
           echo "STATISTICS_PORT=${{ secrets.STATISTICS_PORT }}" >> .env
-          echo "SHOP_PORT=${{ secrets.SHOP_PORT }}" >> .env
+          echo "BADGES_PORT=${{ secrets.BADGES_PORT }}" >> .env
           echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
 
       # Step 4: Build and start the Docker containers
@@ -56,7 +56,7 @@ jobs:
       - name: Run API Gateway tests
         run: |
           curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/users || exit 1
-          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/shop || exit 1
+          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/badges || exit 1
           curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/goalsMilestones || exit 1
           curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/statistics || exit 1
           echo "API Gateway is up and running"

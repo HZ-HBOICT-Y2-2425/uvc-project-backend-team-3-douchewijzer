@@ -56,9 +56,9 @@ export async function addUser(req, res) {
     await executeQuery(pool, 'INSERT INTO goals (userID) VALUES (?)', [userID]);
     await executeQuery(pool, 'INSERT INTO milestone (userID) VALUES (?)', [userID]);
 
-    // Check if default item exists in shop table
-    const shopItem = await executeQuery(pool, 'SELECT itemID FROM shop WHERE itemID = 1');
-    if (shopItem.length > 0) {
+    // Check if default item exists in badge table
+    const badgeItem = await executeQuery(pool, 'SELECT itemID FROM badges WHERE itemID = 1');
+    if (badgeItem.length > 0) {
       await executeQuery(pool, 'INSERT INTO owned_items (userID, itemID, itemPrice) VALUES (?, 1, 0)', [userID]); // Assuming default itemID is 1 and itemPrice is 0
     }
     // Generate JWT token
