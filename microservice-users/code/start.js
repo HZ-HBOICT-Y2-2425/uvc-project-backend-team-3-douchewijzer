@@ -1,8 +1,6 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
-import swaggerUi from 'swagger-ui-express';
-import swaggerJsDoc from 'swagger-jsdoc';
 dotenv.config({ path: '../../.env' }); // Updated path
 import indexRouter from './routes/index.js';
 
@@ -35,27 +33,6 @@ let pool;
 // support json encoded and url-encoded bodies, mainly used for post and update
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-const swaggerOptions = {
-  swaggerDefinition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Users Microservice',
-      version: '1.0.0',
-      description: 'Users Microservice API Documentation',
-    },
-    servers: [
-      {
-        url: `http://localhost:${process.env.USERS_PORT}`,
-      },
-    ],
-  },
-  apis: ['./routes/*.js'],
-};
-
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs, { explorer: true }));
 
 app.use('/', indexRouter);
 
