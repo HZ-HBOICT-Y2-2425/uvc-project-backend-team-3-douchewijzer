@@ -1,6 +1,8 @@
 import express from 'express';
 import * as dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsDoc from 'swagger-jsdoc';
 dotenv.config({ path: '../../.env' }); // Updated path
 import indexRouter from './routes/index.js';
 
@@ -37,6 +39,30 @@ let pool;
     process.exit(1);
   }
 })();
+
+// Swagger setup
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Badges Microservice',
+      version: '1.0.0',
+      description: 'Microservice for managing badges',
+    },
+    servers: [
+      {
+        url: `http://localhost:${process.env.BADGES_PORT}`,
+      },
+    ],
+  },
+  apis: ['./routes/*.js'], // Specify the files to read for Swagger annotations
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.get('/api-docs/swagger.json', (req, res) => {
+  res.json(swaggerDocs);
+});
 
 // support json encoded and url-encoded bodies, mainly used for post and update
 app.use(express.json());

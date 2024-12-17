@@ -20,6 +20,9 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+// Swagger documentation route
+app.use('/api-docs', indexRouter);
+
 app.set('port', process.env.GATEWAY_PORT);
 app.listen(app.get('port'), () => {
   console.log(`API Gateway listening at http://localhost:${port}`);

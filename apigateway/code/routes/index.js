@@ -1,8 +1,13 @@
 import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-const router = express.Router();
+import swaggerRouter from './swagger.js';
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '../../.env' }); // Updated path
+
+const router = express.Router();
+
+// Use the Swagger router for /api-docs
+router.use('/api-docs', swaggerRouter);
 
 // create a proxy for each microservice
 const microserviceUsers = createProxyMiddleware({
@@ -24,8 +29,6 @@ const microserviceBadges = createProxyMiddleware({
   target: `http://microservice-badges:${process.env.BADGES_PORT}`, 
   changeOrigin: true
 });
-
-
 
 router.use('/users', microserviceUsers);
 router.use('/goalsMilestones', microserviceGoalsMilestones);
