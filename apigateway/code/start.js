@@ -54,12 +54,12 @@ addPrefixedPaths(statisticsSwagger, '/statistics', 'Statistics');
 const swaggerDocument = {
   swagger: "2.0",
   info: {
-    title: "My Composite API",
+    title: "Douchewijzer Backend API",
     version: "1.0.0",
-    description: "This is a composite API documentation for all microservices.",
+    description: "This is the API Gateway for the Douchewijzer project. It aggregates the individual services' APIs into a single API.",
     contact: {
-      name: "API Support",
-      email: "support@example.com"
+      name: "Daniël de Jonge",
+      email: "prive@danieldj.nl"
     },
     license: {
       name: "MIT",
