@@ -25,13 +25,16 @@ async function executeQuery(pool, query, params) {
  *               items:
  *                 type: object
  *                 properties:
- *                   itemID:
+ *                   badgeID:
  *                     type: integer
  *                     description: The badge ID
- *                   itemValue:
+ *                   badgeName:
  *                     type: string
- *                     description: The badge value
- *                   itemImage:
+ *                     description: The badge name
+ *                   badgeDescription:
+ *                     type: string
+ *                     description: The badge description
+ *                   badgeImage:
  *                     type: string
  *                     description: The badge image URL
  */
@@ -48,12 +51,12 @@ export async function responsebadge(req, res) {
 
 /**
  * @swagger
- * /badges/{itemID}:
+ * /badges/{badgeID}:
  *   get:
  *     summary: Retrieve a specific badge
  *     parameters:
  *       - in: path
- *         name: itemID
+ *         name: badgeID
  *         required: true
  *         description: The badge ID
  *         schema:
@@ -66,13 +69,16 @@ export async function responsebadge(req, res) {
  *             schema:
  *               type: object
  *               properties:
- *                 itemID:
+ *                 badgeID:
  *                   type: integer
  *                   description: The badge ID
- *                 itemValue:
+ *                 badgeName:
  *                   type: string
- *                   description: The badge value
- *                 itemImage:
+ *                   description: The badge name
+ *                 badgeDescription:
+ *                   type: string
+ *                   description: The badge description
+ *                 badgeImage:
  *                   type: string
  *                   description: The badge image URL
  *       404:
@@ -80,9 +86,9 @@ export async function responsebadge(req, res) {
  */
 export async function getBadgeItem(req, res) {
   const pool = req.app.get('db');
-  const { itemID } = req.params;
+  const { badgeID } = req.params;
   try {
-    const rows = await executeQuery(pool, 'SELECT * FROM badges WHERE itemID = ?', [itemID]);
+    const rows = await executeQuery(pool, 'SELECT * FROM badges WHERE badgeID = ?', [badgeID]);
     if (rows.length === 0) {
       return res.status(404).send('badge item not found.');
     }
@@ -95,23 +101,28 @@ export async function getBadgeItem(req, res) {
 
 /**
  * @swagger
- * /badges/{itemID}/update:
+ * /badges/{badgeID}/update:
  *   put:
  *     summary: Update a specific badge
  *     parameters:
  *       - in: path
- *         name: itemID
+ *         name: badgeID
  *         required: true
  *         description: The badge ID
  *         schema:
  *           type: integer
  *       - in: query
- *         name: itemValue
- *         description: The new badge value
+ *         name: badgeName
+ *         description: The new badge name
  *         schema:
  *           type: string
  *       - in: query
- *         name: itemImage
+ *         name: badgeDescription
+ *         description: The new badge description
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: badgeImage
  *         description: The new badge image URL
  *         schema:
  *           type: string
@@ -125,28 +136,32 @@ export async function getBadgeItem(req, res) {
  */
 export async function changeBadge(req, res) {
   const pool = req.app.get('db');
-  const { itemID } = req.params;
-  const { itemValue, itemImage } = req.query;
+  const { badgeID } = req.params;
+  const { badgeName, badgeDescription, badgeImage } = req.query;
 
   const fields = [];
   const values = [];
 
-  if (itemValue !== undefined) {
-    fields.push('itemValue = ?');
-    values.push(itemValue);
+  if (badgeName !== undefined) {
+    fields.push('badgeName = ?');
+    values.push(badgeName);
   }
-  if (itemImage !== undefined) {
-    fields.push('itemImage = ?');
-    values.push(itemImage);
+  if (badgeDescription !== undefined) {
+    fields.push('badgeDescription = ?');
+    values.push(badgeDescription);
+  }
+  if (badgeImage !== undefined) {
+    fields.push('badgeImage = ?');
+    values.push(badgeImage);
   }
 
   if (fields.length === 0) {
     return res.status(400).send('No fields to update.');
   }
 
-  values.push(itemID);
+  values.push(badgeID);
 
-  const query = `UPDATE badges SET ${fields.join(', ')} WHERE itemID = ?`;
+  const query = `UPDATE badges SET ${fields.join(', ')} WHERE badgeID = ?`;
 
   try {
     const result = await executeQuery(pool, query, values);
@@ -162,12 +177,12 @@ export async function changeBadge(req, res) {
 
 /**
  * @swagger
- * /badges/{itemID}/delete:
+ * /badges/{badgeID}/delete:
  *   delete:
  *     summary: Delete a specific badge
  *     parameters:
  *       - in: path
- *         name: itemID
+ *         name: badgeID
  *         required: true
  *         description: The badge ID
  *         schema:
@@ -180,13 +195,13 @@ export async function changeBadge(req, res) {
  */
 export async function deleteBadge(req, res) {
   const pool = req.app.get('db');
-  const { itemID } = req.params;
+  const { badgeID } = req.params;
   try {
-    const result = await executeQuery(pool, 'DELETE FROM badges WHERE itemID = ?', [itemID]);
+    const result = await executeQuery(pool, 'DELETE FROM badges WHERE badgeID = ?', [badgeID]);
     if (result.affectedRows === 0) {
       return res.status(404).send('Badge item not found.');
     }
-    res.status(200).send(`Badge item deleted: ${itemID}`);
+    res.status(200).send(`Badge item deleted: ${badgeID}`);
   } catch (error) {
     console.error('Error deleting badge item:', error);
     res.status(500).send(`An error occurred while deleting the badge item: ${error.message}`);

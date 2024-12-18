@@ -18,23 +18,26 @@ paths:
                 items:
                   type: object
                   properties:
-                    itemID:
+                    badgeID:
                       type: integer
                       description: "The badge ID"
-                    itemValue:
+                    badgeName:
                       type: string
-                      description: "The badge value"
-                    itemImage:
+                      description: "The badge name"
+                    badgeDescription:
+                      type: string
+                      description: "The badge description"
+                    badgeImage:
                       type: string
                       description: "The badge image URL"
-  /{itemID}:
+  /{badgeID}:
     get:
       summary: "Retrieve a specific badge"
       tags:
         - Badges
       parameters:
         - in: path
-          name: itemID
+          name: badgeID
           required: true
           description: "The badge ID"
           schema:
@@ -47,36 +50,44 @@ paths:
               schema:
                 type: object
                 properties:
-                  itemID:
+                  badgeID:
                     type: integer
                     description: "The badge ID"
-                  itemValue:
+                  badgeName:
                     type: string
-                    description: "The badge value"
-                  itemImage:
+                    description: "The badge name"
+                  badgeDescription:
+                    type: string
+                    description: "The badge description"
+                  badgeImage:
                     type: string
                     description: "The badge image URL"
         404:
           description: "Badge item not found"
-  /{itemID}/update:
+  /{badgeID}/update:
     put:
       summary: "Update a specific badge"
       tags:
         - Badges
       parameters:
         - in: path
-          name: itemID
+          name: badgeID
           required: true
           description: "The badge ID"
           schema:
             type: integer
         - in: query
-          name: itemValue
-          description: "The new badge value"
+          name: badgeName
+          description: "The new badge name"
           schema:
             type: string
         - in: query
-          name: itemImage
+          name: badgeDescription
+          description: "The new badge description"
+          schema:
+            type: string
+        - in: query
+          name: badgeImage
           description: "The new badge image URL"
           schema:
             type: string
@@ -87,14 +98,14 @@ paths:
           description: "No fields to update"
         404:
           description: "Badge item not found"
-  /{itemID}/delete:
+  /{badgeID}/delete:
     delete:
       summary: "Delete a specific badge"
       tags:
         - Badges
       parameters:
         - in: path
-          name: itemID
+          name: badgeID
           required: true
           description: "The badge ID"
           schema:
@@ -108,12 +119,15 @@ definitions:
   Badge:
     type: object
     properties:
-      itemID:
+      badgeID:
         type: integer
         description: "The badge ID"
-      itemValue:
+      badgeName:
         type: string
-        description: "The badge value"
-      itemImage:
+        description: "The badge name"
+      badgeDescription:
+        type: string
+        description: "The badge description"
+      badgeImage:
         type: string
         description: "The badge image URL"

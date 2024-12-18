@@ -158,9 +158,9 @@ paths:
                     userID:
                       type: integer
                       description: "The user ID"
-                    itemID:
+                    badgeID:
                       type: integer
-                      description: "The item ID"
+                      description: "The badge ID"
                     itemPrice:
                       type: integer
                       description: "The item price"
@@ -287,9 +287,9 @@ paths:
                     userID:
                       type: integer
                       description: "The user ID"
-                    itemID:
+                    badgeID:
                       type: integer
-                      description: "The item ID"
+                      description: "The badge ID"
                     itemPrice:
                       type: integer
                       description: "The item price"
@@ -312,7 +312,7 @@ paths:
           schema:
             type: object
             properties:
-              itemID:
+              badgeID:
                 type: integer
               itemPrice:
                 type: integer
@@ -424,9 +424,9 @@ definitions:
       userID:
         type: integer
         description: "The user ID"
-      itemID:
+      badgeID:
         type: integer
-        description: "The item ID"
+        description: "The badge ID"
       itemPrice:
         type: integer
         description: "The item price"

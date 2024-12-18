@@ -18,13 +18,16 @@ const router = express.Router();
  *               items:
  *                 type: object
  *                 properties:
- *                   itemID:
+ *                   badgeID:
  *                     type: integer
  *                     description: The badge ID
- *                   itemValue:
+ *                   badgeName:
  *                     type: string
- *                     description: The badge value
- *                   itemImage:
+ *                     description: The badge name
+ *                   badgeDescription:
+ *                     type: string
+ *                     description: The badge description
+ *                   badgeImage:
  *                     type: string
  *                     description: The badge image URL
  */
@@ -32,12 +35,12 @@ router.get('/', responsebadge);
 
 /**
  * @swagger
- * /{itemID}:
+ * /{badgeID}:
  *   get:
  *     summary: Retrieve a specific badge
  *     parameters:
  *       - in: path
- *         name: itemID
+ *         name: badgeID
  *         required: true
  *         description: The badge ID
  *         schema:
@@ -50,39 +53,47 @@ router.get('/', responsebadge);
  *             schema:
  *               type: object
  *               properties:
- *                 itemID:
+ *                 badgeID:
  *                   type: integer
  *                   description: The badge ID
- *                 itemValue:
+ *                 badgeName:
  *                   type: string
- *                   description: The badge value
- *                 itemImage:
+ *                   description: The badge name
+ *                 badgeDescription:
+ *                   type: string
+ *                   description: The badge description
+ *                 badgeImage:
  *                   type: string
  *                   description: The badge image URL
  *       404:
  *         description: Badge item not found
  */
-router.get('/:itemID', getBadgeItem);
+router.get('/:badgeID', getBadgeItem);
 
 /**
  * @swagger
- * /{itemID}/update:
+ * /{badgeID}/update:
  *   put:
  *     summary: Update a specific badge
  *     parameters:
  *       - in: path
- *         name: itemID
+ *         name: badgeID
  *         required: true
  *         description: The badge ID
  *         schema:
  *           type: integer
  *       - in: query
- *         name: itemValue
- *         description: The new badge value
+ *         name: badgeName
+ *         description: The new badge name
  *         schema:
  *           type: string
  *       - in: query
- *         name: itemImage
+ *         name: badgeDescription
+ *         description: The new badge description
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: badgeImage
  *         description: The new badge image URL
  *         schema:
  *           type: string
@@ -94,16 +105,16 @@ router.get('/:itemID', getBadgeItem);
  *       404:
  *         description: Badge item not found
  */
-router.put('/:itemID/update', changeBadge);
+router.put('/:badgeID/update', changeBadge);
 
 /**
  * @swagger
- * /{itemID}/delete:
+ * /{badgeID}/delete:
  *   delete:
  *     summary: Delete a specific badge
  *     parameters:
  *       - in: path
- *         name: itemID
+ *         name: badgeID
  *         required: true
  *         description: The badge ID
  *         schema:
@@ -114,7 +125,7 @@ router.put('/:itemID/update', changeBadge);
  *       404:
  *         description: Badge item not found
  */
-router.delete('/:itemID/delete', deleteBadge);
+router.delete('/:badgeID/delete', deleteBadge);
 
 router.get("/data", (req, res) => {
   res.json({ message: "Microservice data" });

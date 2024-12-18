@@ -39,10 +39,10 @@ export async function getOwnedItems(req, res) {
 export async function updateOwnedItems(req, res) {
   const pool = req.app.get('db');
   const { userID } = req.params;
-  const { itemID, itemPrice } = req.body;
+  const { badgeID, itemPrice } = req.body;
 
   try {
-    const result = await executeQuery(pool, 'UPDATE owned_items SET itemPrice = ? WHERE userID = ? AND itemID = ?', [itemPrice, userID, itemID]);
+    const result = await executeQuery(pool, 'UPDATE owned_items SET itemPrice = ? WHERE userID = ? AND badgeID = ?', [itemPrice, userID, badgeID]);
     if (result.affectedRows === 0) {
       return res.status(404).send('Owned item not found.');
     }
