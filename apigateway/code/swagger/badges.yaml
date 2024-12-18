@@ -64,7 +64,7 @@ paths:
                     description: "The badge image URL"
         404:
           description: "Badge item not found"
-  /{badgeID}:
+  /{badgeID}/update:
     put:
       summary: "Update a specific badge"
       tags:

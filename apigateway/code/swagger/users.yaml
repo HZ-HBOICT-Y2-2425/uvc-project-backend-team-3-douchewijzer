@@ -195,6 +195,70 @@ paths:
                     description: "The user email"
         404:
           description: "User item not found"
+    put:
+      summary: "Update a specific user"
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          description: "The user ID"
+          schema:
+            type: integer
+        - in: query
+          name: userName
+          description: "The new user name"
+          schema:
+            type: string
+        - in: query
+          name: userEmail
+          description: "The new user email"
+          schema:
+            type: string
+        - in: query
+          name: userImage
+          description: "The new user image URL"
+          schema:
+            type: string
+        - in: query
+          name: password
+          description: "The new user password"
+          schema:
+            type: string
+        - in: query
+          name: coins
+          description: "The new user coins"
+          schema:
+            type: integer
+        - in: query
+          name: userMinutes
+          description: "The new user minutes"
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "User item updated successfully"
+        400:
+          description: "No fields to update"
+        404:
+          description: "User item not found"
+    delete:
+      summary: "Delete a specific user"
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          description: "The user ID"
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "User item deleted"
+        404:
+          description: "User item not found"
   /{userID}/preferences:
     get:
       summary: "Retrieve a specific user's preferences"
@@ -321,72 +385,6 @@ paths:
           description: "Owned item updated successfully"
         404:
           description: "Owned item not found"
-  /{userID}:
-    put:
-      summary: "Update a specific user"
-      tags:
-        - Users
-      parameters:
-        - in: path
-          name: userID
-          required: true
-          description: "The user ID"
-          schema:
-            type: integer
-        - in: query
-          name: userName
-          description: "The new user name"
-          schema:
-            type: string
-        - in: query
-          name: userEmail
-          description: "The new user email"
-          schema:
-            type: string
-        - in: query
-          name: userImage
-          description: "The new user image URL"
-          schema:
-            type: string
-        - in: query
-          name: password
-          description: "The new user password"
-          schema:
-            type: string
-        - in: query
-          name: coins
-          description: "The new user coins"
-          schema:
-            type: integer
-        - in: query
-          name: userMinutes
-          description: "The new user minutes"
-          schema:
-            type: integer
-      responses:
-        200:
-          description: "User item updated successfully"
-        400:
-          description: "No fields to update"
-        404:
-          description: "User item not found"
-  /{userID}/delete:
-    delete:
-      summary: "Delete a specific user"
-      tags:
-        - Users
-      parameters:
-        - in: path
-          name: userID
-          required: true
-          description: "The user ID"
-          schema:
-            type: integer
-      responses:
-        200:
-          description: "User item deleted"
-        404:
-          description: "User item not found"
 definitions:
   User:
     type: object
