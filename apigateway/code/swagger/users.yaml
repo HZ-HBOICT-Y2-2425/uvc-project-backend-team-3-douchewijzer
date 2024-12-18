@@ -321,7 +321,7 @@ paths:
           description: "Owned item updated successfully"
         404:
           description: "Owned item not found"
-  /{userID}/update:
+  /{userID}:
     put:
       summary: "Update a specific user"
       tags:

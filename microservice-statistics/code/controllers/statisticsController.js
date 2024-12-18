@@ -39,7 +39,7 @@ export async function getStatisticsByUser(req, res) {
 export async function updateStatisticByUser(req, res) {
   const pool = req.app.get('db');
   const { userID } = req.params;
-  const { gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage } = { ...req.body, ...req.query };
+  const { gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage } = req.query;
 
   // Build the query dynamically based on provided fields
   const fields = [];

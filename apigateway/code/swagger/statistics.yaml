@@ -113,30 +113,51 @@ paths:
           description: "The user ID"
           schema:
             type: integer
-        - in: body
-          name: statistics
-          description: "The new statistics"
+        - in: query
+          name: gasUsage
+          description: "The gas usage"
           schema:
-            type: object
-            properties:
-              gasUsage:
-                type: number
-              temperature:
-                type: number
-              currentCosts:
-                type: number
-              waterUsage:
-                type: number
-              carbonEmission:
-                type: number
-              totalCost:
-                type: number
-              totalGasUsage:
-                type: number
-              averageTemperature:
-                type: number
-              totalWaterUsage:
-                type: number
+            type: number
+        - in: query
+          name: temperature
+          description: "The temperature"
+          schema:
+            type: number
+        - in: query
+          name: currentCosts
+          description: "The current costs"
+          schema:
+            type: number
+        - in: query
+          name: waterUsage
+          description: "The water usage"
+          schema:
+            type: number
+        - in: query
+          name: carbonEmission
+          description: "The carbon emission"
+          schema:
+            type: number
+        - in: query
+          name: totalCost
+          description: "The total cost"
+          schema:
+            type: number
+        - in: query
+          name: totalGasUsage
+          description: "The total gas usage"
+          schema:
+            type: number
+        - in: query
+          name: averageTemperature
+          description: "The average temperature"
+          schema:
+            type: number
+        - in: query
+          name: totalWaterUsage
+          description: "The total water usage"
+          schema:
+            type: number
       responses:
         200:
           description: "Statistics updated successfully"
