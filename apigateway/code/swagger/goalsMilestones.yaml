@@ -36,6 +36,9 @@ paths:
                     goalProgress:
                       type: integer
                       description: "The goal progress"
+                    goalDescription:
+                      type: string
+                      description: "The goal description"
     post:
       summary: "Add a new goal"
       tags:
@@ -62,6 +65,9 @@ paths:
               goalProgress:
                 type: integer
                 description: "The goal progress"
+              goalDescription:
+                type: string
+                description: "The goal description"
       responses:
         201:
           description: "Goal added successfully"
@@ -107,6 +113,9 @@ paths:
                     goalProgress:
                       type: integer
                       description: "The goal progress"
+                    goalDescription:
+                      type: string
+                      description: "The goal description"
   /goals/{goalID}:
     put:
       summary: "Update a specific goal"
@@ -134,6 +143,11 @@ paths:
           description: "The new goal amount"
           schema:
             type: integer
+        - in: query
+          name: goalDescription
+          description: "The new goal description"
+          schema:
+            type: string
         - in: query
           name: coinValue
           description: "The new coin value"
@@ -370,6 +384,9 @@ definitions:
       goalProgress:
         type: integer
         description: "The goal progress"
+      goalDescription:
+        type: string
+        description: "The goal description"
   Milestone:
     type: object
     properties:

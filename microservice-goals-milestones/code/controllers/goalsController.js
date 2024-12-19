@@ -36,7 +36,7 @@ export async function responseGoalsByUser(req, res) {
 export async function updateGoalById(req, res) {
   const pool = req.app.get('db');
   const { goalID } = req.params;
-  const { name, type, goalAmount, coinValue, dataType, goalProgress } = { ...req.body, ...req.query };
+  const { name, type, goalAmount, coinValue, dataType, goalProgress, goalDescription } = { ...req.body, ...req.query };
 
   const fields = [];
   const values = [];
@@ -64,6 +64,10 @@ export async function updateGoalById(req, res) {
   if (goalProgress !== undefined) {
     fields.push('goalProgress = ?');
     values.push(goalProgress);
+  }
+  if (goalDescription !== undefined) {
+    fields.push('goalDescription = ?');
+    values.push(goalDescription);
   }
 
   if (fields.length === 0) {
@@ -100,14 +104,14 @@ export async function deleteGoalById(req, res) {
 
 export async function addGoal(req, res) {
   const pool = req.app.get('db');
-  const { userID, goalAmount = null, coinValue = null, dataType = null, goalProgress = null } = req.body;
+  const { userID, goalAmount = null, coinValue = null, dataType = null, goalProgress = null, goalDescription = null } = req.body;
 
   if (!userID) {
     return res.status(400).send('userID is required.');
   }
 
   try {
-    await executeQuery(pool, 'INSERT INTO goals (userID, goalAmount, coinValue, dataType, goalProgress) VALUES (?, ?, ?, ?, ?)', [userID, goalAmount, coinValue, dataType, goalProgress]);
+    await executeQuery(pool, 'INSERT INTO goals (userID, goalAmount, coinValue, dataType, goalProgress, goalDescription) VALUES (?, ?, ?, ?, ?, ?)', [userID, goalAmount, coinValue, dataType, goalProgress, goalDescription]);
     res.status(201).send('Goal added successfully.');
   } catch (error) {
     if (error.code === 'ER_NO_REFERENCED_ROW_2') {
