@@ -48,6 +48,12 @@ paths:
                     totalWaterUsage:
                       type: number
                       description: "The total water usage"
+                    lastTime:
+                      type: string
+                      description: "The last time"
+                    averageTime:
+                      type: string
+                      description: "The average time"
   /{userID}:
     get:
       summary: "Retrieve statistics for a specific user"
@@ -100,6 +106,12 @@ paths:
                     totalWaterUsage:
                       type: number
                       description: "The total water usage"
+                    lastTime:
+                      type: string
+                      description: "The last time"
+                    averageTime:
+                      type: string
+                      description: "The average time"
         404:
           description: "No statistics found for the user"
     put:
@@ -158,6 +170,16 @@ paths:
           description: "The total water usage"
           schema:
             type: number
+        - in: query
+          name: lastTime
+          description: "The last time"
+          schema:
+            type: string
+        - in: query
+          name: averageTime
+          description: "The average time"
+          schema:
+            type: string
       responses:
         200:
           description: "Statistics updated successfully"
@@ -199,3 +221,9 @@ definitions:
       totalWaterUsage:
         type: number
         description: "The total water usage"
+      lastTime:
+        type: string
+        description: "The last time"
+      averageTime:
+        type: string
+        description: "The average time"

@@ -39,7 +39,7 @@ export async function getStatisticsByUser(req, res) {
 export async function updateStatisticByUser(req, res) {
   const pool = req.app.get('db');
   const { userID } = req.params;
-  const { gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage } = req.query;
+  const { gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage, lastTime, averageTime } = req.query;
 
   // Build the query dynamically based on provided fields
   const fields = [];
@@ -80,6 +80,14 @@ export async function updateStatisticByUser(req, res) {
   if (totalWaterUsage !== undefined) {
     fields.push('totalWaterUsage = ?');
     values.push(totalWaterUsage);
+  }
+  if (lastTime !== undefined) {
+    fields.push('lastTime = ?');
+    values.push(lastTime);
+  }
+  if (averageTime !== undefined) {
+    fields.push('averageTime = ?');
+    values.push(averageTime);
   }
 
   if (fields.length === 0) {
