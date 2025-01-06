@@ -307,20 +307,26 @@ paths:
           description: "The user ID"
           schema:
             type: integer
-        - in: body
-          name: preferences
-          description: "The new user preferences"
+        - in: query
+          name: leaderbordNotificationPreference
+          description: "The new leaderboard notification preference"
           schema:
-            type: object
-            properties:
-              leaderbordNotificationPreference:
-                type: boolean
-              leaderbordUploadPreference:
-                type: boolean
-              timerSetting:
-                type: integer
-              equipped_item:
-                type: integer
+            type: boolean
+        - in: query
+          name: leaderbordUploadPreference
+          description: "The new leaderboard upload preference"
+          schema:
+            type: boolean
+        - in: query
+          name: timerSetting
+          description: "The new timer setting"
+          schema:
+            type: integer
+        - in: query
+          name: equipped_item
+          description: "The new equipped item ID"
+          schema:
+            type: integer
       responses:
         200:
           description: "User preferences updated successfully"
@@ -370,16 +376,16 @@ paths:
           description: "The user ID"
           schema:
             type: integer
-        - in: body
-          name: ownedItems
-          description: "The new owned items"
+        - in: query
+          name: badgeID
+          description: "The new badge ID"
           schema:
-            type: object
-            properties:
-              badgeID:
-                type: integer
-              itemPrice:
-                type: integer
+            type: integer
+        - in: query
+          name: itemPrice
+          description: "The new item price"
+          schema:
+            type: integer
       responses:
         200:
           description: "Owned item updated successfully"
