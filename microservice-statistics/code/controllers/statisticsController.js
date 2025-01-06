@@ -113,13 +113,26 @@ export async function updateStatisticByUser(req, res) {
 export async function createStatistic(req, res) {
   const pool = req.app.get('db');
   const { userID } = req.params;
-  const { gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage, lastTime, averageTime } = req.body;
+  const { gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage, lastTime, averageTime } = req.query;
 
   const query = `
     INSERT INTO statistics (userID, gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage, lastTime, averageTime)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
-  const values = [userID, gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage, lastTime, averageTime];
+  const values = [
+    userID,
+    gasUsage !== undefined ? gasUsage : null,
+    temperature !== undefined ? temperature : null,
+    currentCosts !== undefined ? currentCosts : null,
+    waterUsage !== undefined ? waterUsage : null,
+    carbonEmission !== undefined ? carbonEmission : null,
+    totalCost !== undefined ? totalCost : null,
+    totalGasUsage !== undefined ? totalGasUsage : null,
+    averageTemperature !== undefined ? averageTemperature : null,
+    totalWaterUsage !== undefined ? totalWaterUsage : null,
+    lastTime !== undefined ? lastTime : null,
+    averageTime !== undefined ? averageTime : null
+  ];
 
   try {
     const result = await executeQuery(pool, query, values);

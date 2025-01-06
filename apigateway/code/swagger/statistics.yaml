@@ -198,47 +198,61 @@ paths:
           description: "The user ID"
           schema:
             type: integer
-      requestBody:
-        description: "Statistics data to be created"
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                gasUsage:
-                  type: number
-                  description: "The gas usage"
-                temperature:
-                  type: number
-                  description: "The temperature"
-                currentCosts:
-                  type: number
-                  description: "The current costs"
-                waterUsage:
-                  type: number
-                  description: "The water usage"
-                carbonEmission:
-                  type: number
-                  description: "The carbon emission"
-                totalCost:
-                  type: number
-                  description: "The total cost"
-                totalGasUsage:
-                  type: number
-                  description: "The total gas usage"
-                averageTemperature:
-                  type: number
-                  description: "The average temperature"
-                totalWaterUsage:
-                  type: number
-                  description: "The total water usage"
-                lastTime:
-                  type: string
-                  description: "The last time"
-                averageTime:
-                  type: string
-                  description: "The average time"
+        - in: query
+          name: gasUsage
+          description: "The gas usage"
+          schema:
+            type: number
+        - in: query
+          name: temperature
+          description: "The temperature"
+          schema:
+            type: number
+        - in: query
+          name: currentCosts
+          description: "The current costs"
+          schema:
+            type: number
+        - in: query
+          name: waterUsage
+          description: "The water usage"
+          schema:
+            type: number
+        - in: query
+          name: carbonEmission
+          description: "The carbon emission"
+          schema:
+            type: number
+        - in: query
+          name: totalCost
+          description: "The total cost"
+          schema:
+            type: number
+        - in: query
+          name: totalGasUsage
+          description: "The total gas usage"
+          schema:
+            type: number
+        - in: query
+          name: averageTemperature
+          description: "The average temperature"
+          schema:
+            type: number
+        - in: query
+          name: totalWaterUsage
+          description: "The total water usage"
+          schema:
+            type: number
+        - in: query
+          name: lastTime
+          description: "The last time"
+          schema:
+            type: string
+        - in: query
+          name: averageTime
+          description: "The average time"
+          schema:
+            type: string
       responses:
         201:
           description: "Statistic created successfully"
