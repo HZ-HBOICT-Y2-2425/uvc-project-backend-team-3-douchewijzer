@@ -187,6 +187,63 @@ paths:
           description: "No fields to update"
         404:
           description: "No statistics found for the user"
+    post:
+      summary: "Create a new statistics entry"
+      tags:
+        - Statistics
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          description: "The user ID"
+          schema:
+            type: integer
+      requestBody:
+        description: "Statistics data to be created"
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gasUsage:
+                  type: number
+                  description: "The gas usage"
+                temperature:
+                  type: number
+                  description: "The temperature"
+                currentCosts:
+                  type: number
+                  description: "The current costs"
+                waterUsage:
+                  type: number
+                  description: "The water usage"
+                carbonEmission:
+                  type: number
+                  description: "The carbon emission"
+                totalCost:
+                  type: number
+                  description: "The total cost"
+                totalGasUsage:
+                  type: number
+                  description: "The total gas usage"
+                averageTemperature:
+                  type: number
+                  description: "The average temperature"
+                totalWaterUsage:
+                  type: number
+                  description: "The total water usage"
+                lastTime:
+                  type: string
+                  description: "The last time"
+                averageTime:
+                  type: string
+                  description: "The average time"
+      responses:
+        201:
+          description: "Statistic created successfully"
+        500:
+          description: "An error occurred while creating the statistic"
 definitions:
   Statistic:
     type: object

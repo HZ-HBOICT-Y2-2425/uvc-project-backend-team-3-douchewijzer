@@ -109,3 +109,23 @@ export async function updateStatisticByUser(req, res) {
     res.status(500).send(`An error occurred while updating the statistic: ${error.message}`);
   }
 }
+
+export async function createStatistic(req, res) {
+  const pool = req.app.get('db');
+  const { userID } = req.params;
+  const { gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage, lastTime, averageTime } = req.body;
+
+  const query = `
+    INSERT INTO statistics (userID, gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage, lastTime, averageTime)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  const values = [userID, gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage, lastTime, averageTime];
+
+  try {
+    const result = await executeQuery(pool, query, values);
+    res.status(201).send(`Statistic created with ID: ${result.insertId}`);
+  } catch (error) {
+    console.error('Error creating statistic:', error);
+    res.status(500).send(`An error occurred while creating the statistic: ${error.message}`);
+  }
+}
