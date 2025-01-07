@@ -104,7 +104,7 @@ export async function deleteGoalById(req, res) {
 
 export async function addGoal(req, res) {
   const pool = req.app.get('db');
-  const { userID, goalAmount = null, coinValue = null, dataType = null, goalProgress = null, goalDescription = null } = req.body;
+  const { userID, goalAmount = null, coinValue = null, dataType = null, goalProgress = null, goalDescription = null } = req.params;
 
   if (!userID) {
     return res.status(400).send('userID is required.');
