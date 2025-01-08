@@ -10,34 +10,6 @@ async function executeQuery(pool, query, params) {
   }
 }
 
-/**
- * @swagger
- * /badges:
- *   get:
- *     summary: Retrieve a list of badges
- *     responses:
- *       200:
- *         description: A list of badges
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   badgeID:
- *                     type: integer
- *                     description: The badge ID
- *                   badgeName:
- *                     type: string
- *                     description: The badge name
- *                   badgeDescription:
- *                     type: string
- *                     description: The badge description
- *                   badgeImage:
- *                     type: string
- *                     description: The badge image URL
- */
 export async function responsebadge(req, res) {
   const pool = req.app.get('db');
   try {
@@ -49,41 +21,6 @@ export async function responsebadge(req, res) {
   }
 }
 
-/**
- * @swagger
- * /badges/{badgeID}:
- *   get:
- *     summary: Retrieve a specific badge
- *     parameters:
- *       - in: path
- *         name: badgeID
- *         required: true
- *         description: The badge ID
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: A badge item
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 badgeID:
- *                   type: integer
- *                   description: The badge ID
- *                 badgeName:
- *                   type: string
- *                   description: The badge name
- *                 badgeDescription:
- *                   type: string
- *                   description: The badge description
- *                 badgeImage:
- *                   type: string
- *                   description: The badge image URL
- *       404:
- *         description: Badge item not found
- */
 export async function getBadgeItem(req, res) {
   const pool = req.app.get('db');
   const { badgeID } = req.params;
@@ -99,41 +36,6 @@ export async function getBadgeItem(req, res) {
   }
 }
 
-/**
- * @swagger
- * /badges/{badgeID}/update:
- *   put:
- *     summary: Update a specific badge
- *     parameters:
- *       - in: path
- *         name: badgeID
- *         required: true
- *         description: The badge ID
- *         schema:
- *           type: integer
- *       - in: query
- *         name: badgeName
- *         description: The new badge name
- *         schema:
- *           type: string
- *       - in: query
- *         name: badgeDescription
- *         description: The new badge description
- *         schema:
- *           type: string
- *       - in: query
- *         name: badgeImage
- *         description: The new badge image URL
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Badge item updated successfully
- *       400:
- *         description: No fields to update
- *       404:
- *         description: Badge item not found
- */
 export async function changeBadge(req, res) {
   const pool = req.app.get('db');
   const { badgeID } = req.params;
@@ -175,24 +77,6 @@ export async function changeBadge(req, res) {
   }
 }
 
-/**
- * @swagger
- * /badges/{badgeID}/delete:
- *   delete:
- *     summary: Delete a specific badge
- *     parameters:
- *       - in: path
- *         name: badgeID
- *         required: true
- *         description: The badge ID
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Badge item deleted
- *       404:
- *         description: Badge item not found
- */
 export async function deleteBadge(req, res) {
   const pool = req.app.get('db');
   const { badgeID } = req.params;
@@ -205,5 +89,25 @@ export async function deleteBadge(req, res) {
   } catch (error) {
     console.error('Error deleting badge item:', error);
     res.status(500).send(`An error occurred while deleting the badge item: ${error.message}`);
+  }
+}
+
+export async function addBadge(req, res) {
+  const pool = req.app.get('db');
+  const { badgeName, badgeDescription, badgeImage } = req.query;
+
+  if (!badgeName || !badgeDescription || !badgeImage) {
+    return res.status(400).send('All fields (badgeName, badgeDescription, badgeImage) are required.');
+  }
+
+  const query = 'INSERT INTO badges (badgeName, badgeDescription, badgeImage) VALUES (?, ?, ?)';
+  const values = [badgeName, badgeDescription, badgeImage];
+
+  try {
+    const result = await executeQuery(pool, query, values);
+    res.status(201).send(`Badge item added with ID: ${result.insertId}`);
+  } catch (error) {
+    console.error('Error adding badge item:', error);
+    res.status(500).send(`An error occurred while adding the badge item: ${error.message}`);
   }
 }

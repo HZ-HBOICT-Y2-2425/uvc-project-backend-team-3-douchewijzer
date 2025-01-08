@@ -115,6 +115,37 @@ paths:
           description: "Badge item deleted"
         404:
           description: "Badge item not found"
+  /add:
+    post:
+      summary: "Add a new badge"
+      tags:
+        - Badges
+      parameters:
+        - in: query
+          name: badgeName
+          required: true
+          description: "The badge name"
+          schema:
+            type: string
+        - in: query
+          name: badgeDescription
+          required: true
+          description: "The badge description"
+          schema:
+            type: string
+        - in: query
+          name: badgeImage
+          required: true
+          description: "The badge image URL"
+          schema:
+            type: string
+      responses:
+        201:
+          description: "Badge item added successfully"
+        400:
+          description: "All fields (badgeName, badgeDescription, badgeImage) are required"
+        500:
+          description: "An error occurred while adding the badge item"
 definitions:
   Badge:
     type: object
