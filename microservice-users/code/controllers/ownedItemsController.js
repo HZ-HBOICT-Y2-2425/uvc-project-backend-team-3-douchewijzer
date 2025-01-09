@@ -52,3 +52,17 @@ export async function updateOwnedItems(req, res) {
     res.status(500).send('An error occurred while updating the owned item.');
   }
 }
+
+export async function addOwnedItem(req, res) {
+  const pool = req.app.get('db');
+  const { userID } = req.params;
+  const { badgeID, itemPrice } = req.query;
+
+  try {
+    const result = await executeQuery(pool, 'INSERT INTO owned_items (userID, badgeID, itemPrice) VALUES (?, ?, ?)', [userID, badgeID, itemPrice]);
+    res.status(201).send('Owned item added successfully.');
+  } catch (error) {
+    console.error('Error adding owned item:', error);
+    res.status(500).send('An error occurred while adding the owned item.');
+  }
+}
