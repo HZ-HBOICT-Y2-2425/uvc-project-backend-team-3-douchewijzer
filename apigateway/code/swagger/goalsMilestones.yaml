@@ -225,6 +225,9 @@ paths:
                     milestoneProgress:
                       type: integer
                       description: "The milestone progress"
+                    milestoneDescription:
+                      type: string
+                      description: "The milestone description"
     post:
       summary: "Add a new milestone"
       tags:
@@ -255,6 +258,11 @@ paths:
           description: "The milestone progress"
           schema:
             type: integer
+        - in: query
+          name: milestoneDescription
+          description: "The milestone description"
+          schema:
+            type: string
       responses:
         201:
           description: "Milestone added successfully"
@@ -300,6 +308,9 @@ paths:
                     milestoneProgress:
                       type: integer
                       description: "The milestone progress"
+                    milestoneDescription:
+                      type: string
+                      description: "The milestone description"
   /milestones/{milestoneID}:
     put:
       summary: "Update a specific milestone"
@@ -337,6 +348,11 @@ paths:
           description: "The new milestone progress"
           schema:
             type: integer
+        - in: query
+          name: milestoneDescription
+          description: "The new milestone description"
+          schema:
+            type: string
       responses:
         200:
           description: "Milestone updated successfully"
@@ -418,3 +434,6 @@ definitions:
       milestoneProgress:
         type: integer
         description: "The milestone progress"
+      milestoneDescription:
+        type: string
+        description: "The milestone description"

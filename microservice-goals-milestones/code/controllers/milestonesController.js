@@ -36,7 +36,7 @@ export async function responseMilestonesByUser(req, res) {
 export async function updateMilestoneById(req, res) {
   const pool = req.app.get('db');
   const { milestoneID } = req.params;
-  const { userID, coinValue, dataType, milestoneAmount, milestoneProgress } = { ...req.body, ...req.query };
+  const { userID, coinValue, dataType, milestoneAmount, milestoneProgress, milestoneDescription } = { ...req.body, ...req.query };
 
   const fields = [];
   const values = [];
@@ -60,6 +60,10 @@ export async function updateMilestoneById(req, res) {
   if (milestoneProgress !== undefined) {
     fields.push('milestoneProgress = ?');
     values.push(milestoneProgress);
+  }
+  if (milestoneDescription !== undefined) {
+    fields.push('milestoneDescription = ?');
+    values.push(milestoneDescription);
   }
 
   if (fields.length === 0) {
@@ -96,14 +100,14 @@ export async function deleteMilestoneById(req, res) {
 
 export async function addMilestone(req, res) {
   const pool = req.app.get('db');
-  const { userID, coinValue = null, dataType = null, milestoneAmount = null, milestoneProgress = null } = { ...req.body, ...req.query };
+  const { userID, coinValue = null, dataType = null, milestoneAmount = null, milestoneProgress = null, milestoneDescription = null } = { ...req.body, ...req.query };
 
   if (!userID) {
     return res.status(400).send('userID is required.');
   }
 
   try {
-    await executeQuery(pool, 'INSERT INTO milestone (userID, coinValue, dataType, milestoneAmount, milestoneProgress) VALUES (?, ?, ?, ?, ?)', [userID, coinValue, dataType, milestoneAmount, milestoneProgress]);
+    await executeQuery(pool, 'INSERT INTO milestone (userID, coinValue, dataType, milestoneAmount, milestoneProgress, milestoneDescription) VALUES (?, ?, ?, ?, ?, ?)', [userID, coinValue, dataType, milestoneAmount, milestoneProgress, milestoneDescription]);
     res.status(201).send('Milestone added successfully.');
   } catch (error) {
     if (error.code === 'ER_NO_REFERENCED_ROW_2') {
