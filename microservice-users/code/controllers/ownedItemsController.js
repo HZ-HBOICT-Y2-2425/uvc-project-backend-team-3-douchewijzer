@@ -62,31 +62,31 @@ export async function listOwnedItems(req, res) {
             createdAt = userCreatedAt;
             break;
           case 2:
-            createdAt = userStatistics.find(stat => parseFloat(stat.temperature) <= 28)?.created_at || new Date();
+            createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 28).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
             break;
           case 3:
-            createdAt = userStatistics.find(stat => parseFloat(stat.temperature) <= 22)?.created_at || new Date();
+            createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 22).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
             break;
           case 4:
-            createdAt = userStatistics.find(stat => parseFloat(stat.temperature) <= 18)?.created_at || new Date();
+            createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 18).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
             break;
           case 5:
-            createdAt = userStatistics.find(stat => coins >= 1000)?.created_at || new Date();
+            createdAt = userStatistics.filter(stat => coins >= 1000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
             break;
           case 6:
-            createdAt = userStatistics.find(stat => coins >= 3000)?.created_at || new Date();
+            createdAt = userStatistics.filter(stat => coins >= 3000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
             break;
           case 7:
-            createdAt = userStatistics.find(stat => coins >= 10000)?.created_at || new Date();
+            createdAt = userStatistics.filter(stat => coins >= 10000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
             break;
           case 8:
-            createdAt = userStatistics.find(stat => statisticsEntriesCount >= 1)?.created_at || new Date();
+            createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 1).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
             break;
           case 9:
-            createdAt = userStatistics.find(stat => statisticsEntriesCount >= 10)?.created_at || new Date();
+            createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 10).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
             break;
           case 10:
-            createdAt = userStatistics.find(stat => statisticsEntriesCount >= 100)?.created_at || new Date();
+            createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 100).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
             break;
         }
 
@@ -101,6 +101,9 @@ export async function listOwnedItems(req, res) {
       // Sort ownedItems by created_at to ensure the first badge is the one that has been created first
       ownedItems.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     }
+
+    // Reverse the array
+    ownedItems.reverse();
 
     res.status(200).send(ownedItems);
   } catch (error) {
@@ -157,31 +160,31 @@ export async function getOwnedItems(req, res) {
           createdAt = userCreatedAt;
           break;
         case 2:
-          createdAt = userStatistics.find(stat => parseFloat(stat.temperature) <= 28)?.created_at || new Date();
+          createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 28).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
           break;
         case 3:
-          createdAt = userStatistics.find(stat => parseFloat(stat.temperature) <= 22)?.created_at || new Date();
+          createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 22).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
           break;
         case 4:
-          createdAt = userStatistics.find(stat => parseFloat(stat.temperature) <= 18)?.created_at || new Date();
+          createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 18).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
           break;
         case 5:
-          createdAt = userStatistics.find(stat => coins >= 1000)?.created_at || new Date();
+          createdAt = userStatistics.filter(stat => coins >= 1000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
           break;
         case 6:
-          createdAt = userStatistics.find(stat => coins >= 3000)?.created_at || new Date();
+          createdAt = userStatistics.filter(stat => coins >= 3000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
           break;
         case 7:
-          createdAt = userStatistics.find(stat => coins >= 10000)?.created_at || new Date();
+          createdAt = userStatistics.filter(stat => coins >= 10000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
           break;
         case 8:
-          createdAt = userStatistics.find(stat => statisticsEntriesCount >= 1)?.created_at || new Date();
+          createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 1).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
           break;
         case 9:
-          createdAt = userStatistics.find(stat => statisticsEntriesCount >= 10)?.created_at || new Date();
+          createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 10).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
           break;
         case 10:
-          createdAt = userStatistics.find(stat => statisticsEntriesCount >= 100)?.created_at || new Date();
+          createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 100).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
           break;
       }
 
@@ -195,6 +198,9 @@ export async function getOwnedItems(req, res) {
 
     // Sort ownedItems by created_at to ensure the first badge is the one that has been created first
     ownedItems.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+    // Reverse the array
+    ownedItems.reverse();
 
     res.status(200).send(ownedItems);
   } catch (error) {
