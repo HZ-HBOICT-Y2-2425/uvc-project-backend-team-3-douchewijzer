@@ -19,7 +19,6 @@ export async function listUsers(req, res) {
     const rows = await executeQuery(pool, 'SELECT * FROM users');
     res.status(200).send(rows);
   } catch (error) {
-    console.error('Error listing users:', error);
     res.status(500).send('An error occurred while listing the users.');
   }
 }
@@ -56,17 +55,11 @@ export async function addUser(req, res) {
     await executeQuery(pool, 'INSERT INTO goals (userID) VALUES (?)', [userID]);
     await executeQuery(pool, 'INSERT INTO milestone (userID) VALUES (?)', [userID]);
 
-    // Check if default item exists in badge table
-    const badgeItem = await executeQuery(pool, 'SELECT itemID FROM badges WHERE itemID = 1');
-    if (badgeItem.length > 0) {
-      await executeQuery(pool, 'INSERT INTO owned_items (userID, itemID, itemPrice) VALUES (?, 1, 0)', [userID]); // Assuming default itemID is 1 and itemPrice is 0
-    }
     // Generate JWT token
     const token = jwt.sign({ userID }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.status(201).json({ message: 'User registered successfully.', token, userID });
-    } catch (error) {
-    console.error('Error inserting user:', error);
+  } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
       res.status(409).json({ error: 'Duplicate entry for email.' });
     } else {
@@ -94,7 +87,6 @@ export async function loginUser(req, res) {
     const token = jwt.sign({ userID: user.userID, name: user.name }, process.env.JWT_SECRET, { expiresIn: '1h' });
     res.status(200).json({ token });
   } catch (error) {
-    console.error('Error logging in user:', error);
     res.status(500).json({ error: 'An error occurred while logging in the user.' });
   }
 }
@@ -124,7 +116,6 @@ export async function getUser(req, res) {
     }
     res.status(200).send(rows[0]);
   } catch (error) {
-    console.error('Error getting user:', error);
     res.status(500).send('An error occurred while getting the user.');
   }
 }
@@ -179,7 +170,6 @@ export async function updateUser(req, res) {
     }
     res.status(200).send('User updated successfully.');
   } catch (error) {
-    console.error('Error updating user:', error);
     res.status(500).send(`An error occurred while updating the user: ${error.message}`);
   }
 }
@@ -194,7 +184,6 @@ export async function deleteUser(req, res) {
     await executeQuery(pool, 'DELETE FROM statistics WHERE userID = ?', [userID]);
     await executeQuery(pool, 'DELETE FROM milestone WHERE userID = ?', [userID]);
     await executeQuery(pool, 'DELETE FROM goals WHERE userID = ?', [userID]);
-    await executeQuery(pool, 'DELETE FROM owned_items WHERE userID = ?', [userID]);
 
     // Delete the user
     const result = await executeQuery(pool, 'DELETE FROM users WHERE userID = ?', [userID]);
@@ -204,7 +193,6 @@ export async function deleteUser(req, res) {
 
     res.status(200).send('User and related data deleted successfully.');
   } catch (error) {
-    console.error('Error deleting user:', error);
     res.status(500).send('An error occurred while deleting the user.');
   }
 }

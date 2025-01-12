@@ -16,7 +16,6 @@ export async function responseStatistics(req, res) {
     const rows = await executeQuery(pool, 'SELECT * FROM statistics');
     res.status(200).send(rows);
   } catch (error) {
-    console.error('Error fetching statistics:', error);
     res.status(500).send(`An error occurred while fetching statistics: ${error.message}`);
   }
 }
@@ -31,7 +30,6 @@ export async function getStatisticsByUser(req, res) {
     }
     res.status(200).send(rows);
   } catch (error) {
-    console.error('Error fetching statistics for user:', error);
     res.status(500).send(`An error occurred while fetching statistics for user ID: ${userID}: ${error.message}`);
   }
 }
@@ -39,7 +37,7 @@ export async function getStatisticsByUser(req, res) {
 export async function updateStatisticByUser(req, res) {
   const pool = req.app.get('db');
   const { userID } = req.params;
-  const { gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage } = { ...req.body, ...req.query };
+  const { gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage, lastTime, averageTime } = req.query;
 
   // Build the query dynamically based on provided fields
   const fields = [];
@@ -81,6 +79,14 @@ export async function updateStatisticByUser(req, res) {
     fields.push('totalWaterUsage = ?');
     values.push(totalWaterUsage);
   }
+  if (lastTime !== undefined) {
+    fields.push('lastTime = ?');
+    values.push(lastTime);
+  }
+  if (averageTime !== undefined) {
+    fields.push('averageTime = ?');
+    values.push(averageTime);
+  }
 
   if (fields.length === 0) {
     return res.status(400).send('No fields to update.');
@@ -97,7 +103,38 @@ export async function updateStatisticByUser(req, res) {
     }
     res.status(200).send(`Statistic updated for user ID: ${userID}`);
   } catch (error) {
-    console.error('Error updating statistic:', error);
     res.status(500).send(`An error occurred while updating the statistic: ${error.message}`);
+  }
+}
+
+export async function createStatistic(req, res) {
+  const pool = req.app.get('db');
+  const { userID } = req.params;
+  const { gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage, lastTime, averageTime } = req.query;
+
+  const query = `
+    INSERT INTO statistics (userID, gasUsage, temperature, currentCosts, waterUsage, carbonEmission, totalCost, totalGasUsage, averageTemperature, totalWaterUsage, lastTime, averageTime)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  const values = [
+    userID,
+    gasUsage !== undefined ? gasUsage : null,
+    temperature !== undefined ? temperature : null,
+    currentCosts !== undefined ? currentCosts : null,
+    waterUsage !== undefined ? waterUsage : null,
+    carbonEmission !== undefined ? carbonEmission : null,
+    totalCost !== undefined ? totalCost : null,
+    totalGasUsage !== undefined ? totalGasUsage : null,
+    averageTemperature !== undefined ? averageTemperature : null,
+    totalWaterUsage !== undefined ? totalWaterUsage : null,
+    lastTime !== undefined ? lastTime : null,
+    averageTime !== undefined ? averageTime : null
+  ];
+
+  try {
+    const result = await executeQuery(pool, query, values);
+    res.status(201).send(`Statistic created with ID: ${result.insertId}`);
+  } catch (error) {
+    res.status(500).send(`An error occurred while creating the statistic: ${error.message}`);
   }
 }

@@ -1,7 +1,6 @@
 import express from 'express';
 import { responseMilestones, responseMilestonesByUser, updateMilestoneById, deleteMilestoneById, addMilestone } from '../controllers/milestonesController.js';
 import { responseGoals, responseGoalsByUser, updateGoalById, deleteGoalById, addGoal } from '../controllers/goalsController.js';
-// import { checkName } from '../middleware/exampleMiddleware.js';
 const router = express.Router();
 
 router.get('/', (req, res) => {

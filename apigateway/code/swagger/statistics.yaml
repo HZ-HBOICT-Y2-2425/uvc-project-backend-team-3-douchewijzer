@@ -48,6 +48,12 @@ paths:
                     totalWaterUsage:
                       type: number
                       description: "The total water usage"
+                    lastTime:
+                      type: string
+                      description: "The last time"
+                    averageTime:
+                      type: string
+                      description: "The average time"
   /{userID}:
     get:
       summary: "Retrieve statistics for a specific user"
@@ -100,6 +106,12 @@ paths:
                     totalWaterUsage:
                       type: number
                       description: "The total water usage"
+                    lastTime:
+                      type: string
+                      description: "The last time"
+                    averageTime:
+                      type: string
+                      description: "The average time"
         404:
           description: "No statistics found for the user"
     put:
@@ -113,30 +125,61 @@ paths:
           description: "The user ID"
           schema:
             type: integer
-        - in: body
-          name: statistics
-          description: "The new statistics"
+        - in: query
+          name: gasUsage
+          description: "The gas usage"
           schema:
-            type: object
-            properties:
-              gasUsage:
-                type: number
-              temperature:
-                type: number
-              currentCosts:
-                type: number
-              waterUsage:
-                type: number
-              carbonEmission:
-                type: number
-              totalCost:
-                type: number
-              totalGasUsage:
-                type: number
-              averageTemperature:
-                type: number
-              totalWaterUsage:
-                type: number
+            type: number
+        - in: query
+          name: temperature
+          description: "The temperature"
+          schema:
+            type: number
+        - in: query
+          name: currentCosts
+          description: "The current costs"
+          schema:
+            type: number
+        - in: query
+          name: waterUsage
+          description: "The water usage"
+          schema:
+            type: number
+        - in: query
+          name: carbonEmission
+          description: "The carbon emission"
+          schema:
+            type: number
+        - in: query
+          name: totalCost
+          description: "The total cost"
+          schema:
+            type: number
+        - in: query
+          name: totalGasUsage
+          description: "The total gas usage"
+          schema:
+            type: number
+        - in: query
+          name: averageTemperature
+          description: "The average temperature"
+          schema:
+            type: number
+        - in: query
+          name: totalWaterUsage
+          description: "The total water usage"
+          schema:
+            type: number
+        - in: query
+          name: lastTime
+          description: "The last time"
+          schema:
+            type: string
+        - in: query
+          name: averageTime
+          description: "The average time"
+          schema:
+            type: string
       responses:
         200:
           description: "Statistics updated successfully"
@@ -144,6 +187,77 @@ paths:
           description: "No fields to update"
         404:
           description: "No statistics found for the user"
+    post:
+      summary: "Create a new statistics entry"
+      tags:
+        - Statistics
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          description: "The user ID"
+          schema:
+            type: integer
+        - in: query
+          name: gasUsage
+          description: "The gas usage"
+          schema:
+            type: number
+        - in: query
+          name: temperature
+          description: "The temperature"
+          schema:
+            type: number
+        - in: query
+          name: currentCosts
+          description: "The current costs"
+          schema:
+            type: number
+        - in: query
+          name: waterUsage
+          description: "The water usage"
+          schema:
+            type: number
+        - in: query
+          name: carbonEmission
+          description: "The carbon emission"
+          schema:
+            type: number
+        - in: query
+          name: totalCost
+          description: "The total cost"
+          schema:
+            type: number
+        - in: query
+          name: totalGasUsage
+          description: "The total gas usage"
+          schema:
+            type: number
+        - in: query
+          name: averageTemperature
+          description: "The average temperature"
+          schema:
+            type: number
+        - in: query
+          name: totalWaterUsage
+          description: "The total water usage"
+          schema:
+            type: number
+        - in: query
+          name: lastTime
+          description: "The last time"
+          schema:
+            type: string
+        - in: query
+          name: averageTime
+          description: "The average time"
+          schema:
+            type: string
+      responses:
+        201:
+          description: "Statistic created successfully"
+        500:
+          description: "An error occurred while creating the statistic"
 definitions:
   Statistic:
     type: object
@@ -178,3 +292,9 @@ definitions:
       totalWaterUsage:
         type: number
         description: "The total water usage"
+      lastTime:
+        type: string
+        description: "The last time"
+      averageTime:
+        type: string
+        description: "The average time"

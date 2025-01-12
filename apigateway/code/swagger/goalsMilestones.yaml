@@ -36,32 +36,44 @@ paths:
                     goalProgress:
                       type: integer
                       description: "The goal progress"
+                    goalDescription:
+                      type: string
+                      description: "The goal description"
     post:
       summary: "Add a new goal"
       tags:
         - Goals-Milestones
       parameters:
-        - in: body
-          name: goal
-          description: "The new goal"
+        - in: query
+          name: userID
+          description: "The user ID"
           schema:
-            type: object
-            properties:
-              userID:
-                type: integer
-                description: "The user ID"
-              goalAmount:
-                type: integer
-                description: "The goal amount"
-              coinValue:
-                type: integer
-                description: "The coin value"
-              dataType:
-                type: string
-                description: "The data type"
-              goalProgress:
-                type: integer
-                description: "The goal progress"
+            type: integer
+        - in: query
+          name: goalAmount
+          description: "The goal amount"
+          schema:
+            type: integer
+        - in: query
+          name: coinValue
+          description: "The coin value"
+          schema:
+            type: integer
+        - in: query
+          name: dataType
+          description: "The data type"
+          schema:
+            type: string
+        - in: query
+          name: goalProgress
+          description: "The goal progress"
+          schema:
+            type: integer
+        - in: query
+          name: goalDescription
+          description: "The goal description"
+          schema:
+            type: string
       responses:
         201:
           description: "Goal added successfully"
@@ -107,6 +119,9 @@ paths:
                     goalProgress:
                       type: integer
                       description: "The goal progress"
+                    goalDescription:
+                      type: string
+                      description: "The goal description"
   /goals/{goalID}:
     put:
       summary: "Update a specific goal"
@@ -134,6 +149,11 @@ paths:
           description: "The new goal amount"
           schema:
             type: integer
+        - in: query
+          name: goalDescription
+          description: "The new goal description"
+          schema:
+            type: string
         - in: query
           name: coinValue
           description: "The new coin value"
@@ -205,32 +225,44 @@ paths:
                     milestoneProgress:
                       type: integer
                       description: "The milestone progress"
+                    milestoneDescription:
+                      type: string
+                      description: "The milestone description"
     post:
       summary: "Add a new milestone"
       tags:
         - Goals-Milestones
       parameters:
-        - in: body
-          name: milestone
-          description: "The new milestone"
+        - in: query
+          name: userID
+          description: "The user ID"
           schema:
-            type: object
-            properties:
-              userID:
-                type: integer
-                description: "The user ID"
-              coinValue:
-                type: integer
-                description: "The coin value"
-              dataType:
-                type: string
-                description: "The data type"
-              milestoneAmount:
-                type: integer
-                description: "The milestone amount"
-              milestoneProgress:
-                type: integer
-                description: "The milestone progress"
+            type: integer
+        - in: query
+          name: coinValue
+          description: "The coin value"
+          schema:
+            type: integer
+        - in: query
+          name: dataType
+          description: "The data type"
+          schema:
+            type: string
+        - in: query
+          name: milestoneAmount
+          description: "The milestone amount"
+          schema:
+            type: integer
+        - in: query
+          name: milestoneProgress
+          description: "The milestone progress"
+          schema:
+            type: integer
+        - in: query
+          name: milestoneDescription
+          description: "The milestone description"
+          schema:
+            type: string
       responses:
         201:
           description: "Milestone added successfully"
@@ -276,6 +308,9 @@ paths:
                     milestoneProgress:
                       type: integer
                       description: "The milestone progress"
+                    milestoneDescription:
+                      type: string
+                      description: "The milestone description"
   /milestones/{milestoneID}:
     put:
       summary: "Update a specific milestone"
@@ -313,6 +348,11 @@ paths:
           description: "The new milestone progress"
           schema:
             type: integer
+        - in: query
+          name: milestoneDescription
+          description: "The new milestone description"
+          schema:
+            type: string
       responses:
         200:
           description: "Milestone updated successfully"
@@ -370,6 +410,9 @@ definitions:
       goalProgress:
         type: integer
         description: "The goal progress"
+      goalDescription:
+        type: string
+        description: "The goal description"
   Milestone:
     type: object
     properties:
@@ -391,3 +434,6 @@ definitions:
       milestoneProgress:
         type: integer
         description: "The milestone progress"
+      milestoneDescription:
+        type: string
+        description: "The milestone description"

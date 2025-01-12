@@ -158,9 +158,9 @@ paths:
                     userID:
                       type: integer
                       description: "The user ID"
-                    itemID:
+                    badgeID:
                       type: integer
-                      description: "The item ID"
+                      description: "The badge ID"
                     itemPrice:
                       type: integer
                       description: "The item price"
@@ -193,6 +193,70 @@ paths:
                   userEmail:
                     type: string
                     description: "The user email"
+        404:
+          description: "User item not found"
+    put:
+      summary: "Update a specific user"
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          description: "The user ID"
+          schema:
+            type: integer
+        - in: query
+          name: userName
+          description: "The new user name"
+          schema:
+            type: string
+        - in: query
+          name: userEmail
+          description: "The new user email"
+          schema:
+            type: string
+        - in: query
+          name: userImage
+          description: "The new user image URL"
+          schema:
+            type: string
+        - in: query
+          name: password
+          description: "The new user password"
+          schema:
+            type: string
+        - in: query
+          name: coins
+          description: "The new user coins"
+          schema:
+            type: integer
+        - in: query
+          name: userMinutes
+          description: "The new user minutes"
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "User item updated successfully"
+        400:
+          description: "No fields to update"
+        404:
+          description: "User item not found"
+    delete:
+      summary: "Delete a specific user"
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          description: "The user ID"
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "User item deleted"
         404:
           description: "User item not found"
   /{userID}/preferences:
@@ -243,20 +307,26 @@ paths:
           description: "The user ID"
           schema:
             type: integer
-        - in: body
-          name: preferences
-          description: "The new user preferences"
+        - in: query
+          name: leaderbordNotificationPreference
+          description: "The new leaderboard notification preference"
           schema:
-            type: object
-            properties:
-              leaderbordNotificationPreference:
-                type: boolean
-              leaderbordUploadPreference:
-                type: boolean
-              timerSetting:
-                type: integer
-              equipped_item:
-                type: integer
+            type: boolean
+        - in: query
+          name: leaderbordUploadPreference
+          description: "The new leaderboard upload preference"
+          schema:
+            type: boolean
+        - in: query
+          name: timerSetting
+          description: "The new timer setting"
+          schema:
+            type: integer
+        - in: query
+          name: equipped_item
+          description: "The new equipped item ID"
+          schema:
+            type: integer
       responses:
         200:
           description: "User preferences updated successfully"
@@ -287,106 +357,14 @@ paths:
                     userID:
                       type: integer
                       description: "The user ID"
-                    itemID:
+                    badgeID:
                       type: integer
-                      description: "The item ID"
+                      description: "The badge ID"
                     itemPrice:
                       type: integer
                       description: "The item price"
         404:
           description: "Owned items not found"
-    put:
-      summary: "Update a specific user's owned items"
-      tags:
-        - Users
-      parameters:
-        - in: path
-          name: userID
-          required: true
-          description: "The user ID"
-          schema:
-            type: integer
-        - in: body
-          name: ownedItems
-          description: "The new owned items"
-          schema:
-            type: object
-            properties:
-              itemID:
-                type: integer
-              itemPrice:
-                type: integer
-      responses:
-        200:
-          description: "Owned item updated successfully"
-        404:
-          description: "Owned item not found"
-  /{userID}/update:
-    put:
-      summary: "Update a specific user"
-      tags:
-        - Users
-      parameters:
-        - in: path
-          name: userID
-          required: true
-          description: "The user ID"
-          schema:
-            type: integer
-        - in: query
-          name: userName
-          description: "The new user name"
-          schema:
-            type: string
-        - in: query
-          name: userEmail
-          description: "The new user email"
-          schema:
-            type: string
-        - in: query
-          name: userImage
-          description: "The new user image URL"
-          schema:
-            type: string
-        - in: query
-          name: password
-          description: "The new user password"
-          schema:
-            type: string
-        - in: query
-          name: coins
-          description: "The new user coins"
-          schema:
-            type: integer
-        - in: query
-          name: userMinutes
-          description: "The new user minutes"
-          schema:
-            type: integer
-      responses:
-        200:
-          description: "User item updated successfully"
-        400:
-          description: "No fields to update"
-        404:
-          description: "User item not found"
-  /{userID}/delete:
-    delete:
-      summary: "Delete a specific user"
-      tags:
-        - Users
-      parameters:
-        - in: path
-          name: userID
-          required: true
-          description: "The user ID"
-          schema:
-            type: integer
-      responses:
-        200:
-          description: "User item deleted"
-        404:
-          description: "User item not found"
 definitions:
   User:
     type: object
@@ -424,9 +402,9 @@ definitions:
       userID:
         type: integer
         description: "The user ID"
-      itemID:
+      badgeID:
         type: integer
-        description: "The item ID"
+        description: "The badge ID"
       itemPrice:
         type: integer
         description: "The item price"

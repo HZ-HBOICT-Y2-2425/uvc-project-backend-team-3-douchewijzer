@@ -16,7 +16,6 @@ export async function responseGoals(req, res) {
     const rows = await executeQuery(pool, 'SELECT * FROM goals');
     res.status(200).send(rows);
   } catch (error) {
-    console.error('Error fetching goals:', error);
     res.status(500).send(`An error occurred while fetching goals: ${error.message}`);
   }
 }
@@ -28,7 +27,6 @@ export async function responseGoalsByUser(req, res) {
     const rows = await executeQuery(pool, 'SELECT * FROM goals WHERE userID = ?', [userID]);
     res.status(200).send(rows);
   } catch (error) {
-    console.error('Error fetching goals by user:', error);
     res.status(500).send(`An error occurred while fetching goals by user: ${error.message}`);
   }
 }
@@ -36,7 +34,7 @@ export async function responseGoalsByUser(req, res) {
 export async function updateGoalById(req, res) {
   const pool = req.app.get('db');
   const { goalID } = req.params;
-  const { name, type, goalAmount, coinValue, dataType, goalProgress } = { ...req.body, ...req.query };
+  const { name, type, goalAmount, coinValue, dataType, goalProgress, goalDescription } = { ...req.body, ...req.query };
 
   const fields = [];
   const values = [];
@@ -65,6 +63,10 @@ export async function updateGoalById(req, res) {
     fields.push('goalProgress = ?');
     values.push(goalProgress);
   }
+  if (goalDescription !== undefined) {
+    fields.push('goalDescription = ?');
+    values.push(goalDescription);
+  }
 
   if (fields.length === 0) {
     return res.status(400).send('No fields to update.');
@@ -81,7 +83,6 @@ export async function updateGoalById(req, res) {
     }
     res.status(200).send('Goal updated successfully.');
   } catch (error) {
-    console.error('Error updating goal:', error);
     res.status(500).send(`An error occurred while updating the goal: ${error.message}`);
   }
 }
@@ -93,27 +94,25 @@ export async function deleteGoalById(req, res) {
     await executeQuery(pool, 'DELETE FROM goals WHERE goalID = ?', [goalID]);
     res.status(200).send(`Goal deleted with ID: ${goalID}`);
   } catch (error) {
-    console.error('Error deleting goal:', error);
     res.status(500).send(`An error occurred while deleting the goal: ${error.message}`);
   }
 }
 
 export async function addGoal(req, res) {
   const pool = req.app.get('db');
-  const { userID, goalAmount = null, coinValue = null, dataType = null, goalProgress = null } = req.body;
+  const { userID, goalAmount = null, coinValue = null, dataType = null, goalProgress = null, goalDescription = null } = req.query;
 
   if (!userID) {
     return res.status(400).send('userID is required.');
   }
 
   try {
-    await executeQuery(pool, 'INSERT INTO goals (userID, goalAmount, coinValue, dataType, goalProgress) VALUES (?, ?, ?, ?, ?)', [userID, goalAmount, coinValue, dataType, goalProgress]);
+    await executeQuery(pool, 'INSERT INTO goals (userID, goalAmount, coinValue, dataType, goalProgress, goalDescription) VALUES (?, ?, ?, ?, ?, ?)', [userID, goalAmount, coinValue, dataType, goalProgress, goalDescription]);
     res.status(201).send('Goal added successfully.');
   } catch (error) {
     if (error.code === 'ER_NO_REFERENCED_ROW_2') {
       res.status(400).send('An error occurred while adding the goal: The specified userID does not exist.');
     } else {
-      console.error('Error adding goal:', error);
       res.status(500).send(`An error occurred while adding the goal: ${error.message}`);
     }
   }
