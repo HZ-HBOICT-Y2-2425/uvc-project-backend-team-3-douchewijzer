@@ -365,60 +365,6 @@ paths:
                       description: "The item price"
         404:
           description: "Owned items not found"
-    put:
-      summary: "Update a specific user's owned items"
-      tags:
-        - Users
-      parameters:
-        - in: path
-          name: userID
-          required: true
-          description: "The user ID"
-          schema:
-            type: integer
-        - in: query
-          name: badgeID
-          description: "The new badge ID"
-          schema:
-            type: integer
-        - in: query
-          name: itemPrice
-          description: "The new item price"
-          schema:
-            type: integer
-      responses:
-        200:
-          description: "Owned item updated successfully"
-        404:
-          description: "Owned item not found"
-    post:
-      summary: "Add a new owned item for a specific user"
-      tags:
-        - Users
-      parameters:
-        - in: path
-          name: userID
-          required: true
-          description: "The user ID"
-          schema:
-            type: integer
-        - in: query
-          name: badgeID
-          required: true
-          description: "The badge ID"
-          schema:
-            type: integer
-        - in: query
-          name: itemPrice
-          required: true
-          description: "The item price"
-          schema:
-            type: integer
-      responses:
-        201:
-          description: "Owned item added successfully"
-        400:
-          description: "Invalid input"
 definitions:
   User:
     type: object

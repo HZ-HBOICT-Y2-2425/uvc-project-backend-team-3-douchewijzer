@@ -208,34 +208,3 @@ export async function getOwnedItems(req, res) {
     res.status(500).send('An error occurred while getting the owned items.');
   }
 }
-
-export async function updateOwnedItems(req, res) {
-  const pool = req.app.get('db');
-  const { userID } = req.params;
-  const { badgeID, itemPrice } = req.body;
-
-  try {
-    const result = await executeQuery(pool, 'UPDATE owned_items SET itemPrice = ? WHERE userID = ? AND badgeID = ?', [itemPrice, userID, badgeID]);
-    if (result.affectedRows === 0) {
-      return res.status(404).send('Owned item not found.');
-    }
-    res.status(200).send('Owned item updated successfully.');
-  } catch (error) {
-    console.error('Error updating owned item:', error);
-    res.status(500).send('An error occurred while updating the owned item.');
-  }
-}
-
-export async function addOwnedItem(req, res) {
-  const pool = req.app.get('db');
-  const { userID } = req.params;
-  const { badgeID, itemPrice } = req.query;
-
-  try {
-    const result = await executeQuery(pool, 'INSERT INTO owned_items (userID, badgeID, itemPrice) VALUES (?, ?, ?)', [userID, badgeID, itemPrice]);
-    res.status(201).send('Owned item added successfully.');
-  } catch (error) {
-    console.error('Error adding owned item:', error);
-    res.status(500).send('An error occurred while adding the owned item.');
-  }
-}

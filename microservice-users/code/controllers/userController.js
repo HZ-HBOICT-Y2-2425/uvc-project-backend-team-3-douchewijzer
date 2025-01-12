@@ -56,16 +56,11 @@ export async function addUser(req, res) {
     await executeQuery(pool, 'INSERT INTO goals (userID) VALUES (?)', [userID]);
     await executeQuery(pool, 'INSERT INTO milestone (userID) VALUES (?)', [userID]);
 
-    // Check if default item exists in badge table
-    const badgeItem = await executeQuery(pool, 'SELECT badgeID FROM badges WHERE badgeID = 1');
-    if (badgeItem.length > 0) {
-      await executeQuery(pool, 'INSERT INTO owned_items (userID, badgeID, itemPrice) VALUES (?, 1, 0)', [userID]); // Assuming default badgeID is 1 and itemPrice is 0
-    }
     // Generate JWT token
     const token = jwt.sign({ userID }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.status(201).json({ message: 'User registered successfully.', token, userID });
-    } catch (error) {
+  } catch (error) {
     console.error('Error inserting user:', error);
     if (error.code === 'ER_DUP_ENTRY') {
       res.status(409).json({ error: 'Duplicate entry for email.' });
@@ -194,7 +189,6 @@ export async function deleteUser(req, res) {
     await executeQuery(pool, 'DELETE FROM statistics WHERE userID = ?', [userID]);
     await executeQuery(pool, 'DELETE FROM milestone WHERE userID = ?', [userID]);
     await executeQuery(pool, 'DELETE FROM goals WHERE userID = ?', [userID]);
-    await executeQuery(pool, 'DELETE FROM owned_items WHERE userID = ?', [userID]);
 
     // Delete the user
     const result = await executeQuery(pool, 'DELETE FROM users WHERE userID = ?', [userID]);
