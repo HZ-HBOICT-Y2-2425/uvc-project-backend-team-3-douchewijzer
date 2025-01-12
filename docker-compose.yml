@@ -1,27 +1,50 @@
 services:
-  microservice:
-    container_name: microservice
-    build: ./microservice
+  microservice-users:
+    build: ./microservice-users
     volumes:
-      - ./microservice/code:/usr/src/app
-    networks:
-      - msexample
-    ports:
-      - "3011:3011"
-    working_dir: /usr/src/app
-    command: bash -c "npm install && npm run dev"
-  gateway:
-    container_name: apigateway
+      - ./microservice-users/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
+
+  microservice-statistics:
+    build: ./microservice-statistics
+    volumes:
+      - ./microservice-statistics/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
+
+  microservice-badges:
+    build: ./microservice-badges
+    volumes:
+      - ./microservice-badges/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
+
+  microservice-goals-milestones:
+    build: ./microservice-goals-milestones
+    volumes:
+      - ./microservice-goals-milestones/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
+
+  apigateway:
     build: ./apigateway
     volumes:
-      - ./apigateway/code:/usr/src/app
-    networks:
-      - msexample
+      - ./apigateway/code:/code
+      - /code/node_modules
+    env_file:
+      - ./.env    
     ports:
-      - "3010:3010"
-    working_dir: /usr/src/app
-    command: bash -c "npm install && npm run dev"
+      - "${GATEWAY_PORT}:${GATEWAY_PORT}" # Only expose the API Gateway
+    depends_on:
+      - microservice-users
+      - microservice-statistics
+      - microservice-badges
+      - microservice-goals-milestones
 
-networks:
-  msexample:
-    driver: bridge
+volumes:
+  mysql-data:

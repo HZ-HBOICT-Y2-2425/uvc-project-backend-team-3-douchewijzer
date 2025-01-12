@@ -1,0 +1,300 @@
+swagger: "2.0"
+info:
+  title: "Statistics Microservice API"
+  version: "1.0.0"
+paths:
+  /:
+    get:
+      summary: "Retrieve a list of statistics"
+      tags:
+        - Statistics
+      responses:
+        200:
+          description: "A list of statistics"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    userID:
+                      type: integer
+                      description: "The user ID"
+                    gasUsage:
+                      type: number
+                      description: "The gas usage"
+                    temperature:
+                      type: number
+                      description: "The temperature"
+                    currentCosts:
+                      type: number
+                      description: "The current costs"
+                    waterUsage:
+                      type: number
+                      description: "The water usage"
+                    carbonEmission:
+                      type: number
+                      description: "The carbon emission"
+                    totalCost:
+                      type: number
+                      description: "The total cost"
+                    totalGasUsage:
+                      type: number
+                      description: "The total gas usage"
+                    averageTemperature:
+                      type: number
+                      description: "The average temperature"
+                    totalWaterUsage:
+                      type: number
+                      description: "The total water usage"
+                    lastTime:
+                      type: string
+                      description: "The last time"
+                    averageTime:
+                      type: string
+                      description: "The average time"
+  /{userID}:
+    get:
+      summary: "Retrieve statistics for a specific user"
+      tags:
+        - Statistics
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          description: "The user ID"
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "Statistics for the user"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    userID:
+                      type: integer
+                      description: "The user ID"
+                    gasUsage:
+                      type: number
+                      description: "The gas usage"
+                    temperature:
+                      type: number
+                      description: "The temperature"
+                    currentCosts:
+                      type: number
+                      description: "The current costs"
+                    waterUsage:
+                      type: number
+                      description: "The water usage"
+                    carbonEmission:
+                      type: number
+                      description: "The carbon emission"
+                    totalCost:
+                      type: number
+                      description: "The total cost"
+                    totalGasUsage:
+                      type: number
+                      description: "The total gas usage"
+                    averageTemperature:
+                      type: number
+                      description: "The average temperature"
+                    totalWaterUsage:
+                      type: number
+                      description: "The total water usage"
+                    lastTime:
+                      type: string
+                      description: "The last time"
+                    averageTime:
+                      type: string
+                      description: "The average time"
+        404:
+          description: "No statistics found for the user"
+    put:
+      summary: "Update statistics for a specific user"
+      tags:
+        - Statistics
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          description: "The user ID"
+          schema:
+            type: integer
+        - in: query
+          name: gasUsage
+          description: "The gas usage"
+          schema:
+            type: number
+        - in: query
+          name: temperature
+          description: "The temperature"
+          schema:
+            type: number
+        - in: query
+          name: currentCosts
+          description: "The current costs"
+          schema:
+            type: number
+        - in: query
+          name: waterUsage
+          description: "The water usage"
+          schema:
+            type: number
+        - in: query
+          name: carbonEmission
+          description: "The carbon emission"
+          schema:
+            type: number
+        - in: query
+          name: totalCost
+          description: "The total cost"
+          schema:
+            type: number
+        - in: query
+          name: totalGasUsage
+          description: "The total gas usage"
+          schema:
+            type: number
+        - in: query
+          name: averageTemperature
+          description: "The average temperature"
+          schema:
+            type: number
+        - in: query
+          name: totalWaterUsage
+          description: "The total water usage"
+          schema:
+            type: number
+        - in: query
+          name: lastTime
+          description: "The last time"
+          schema:
+            type: string
+        - in: query
+          name: averageTime
+          description: "The average time"
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Statistics updated successfully"
+        400:
+          description: "No fields to update"
+        404:
+          description: "No statistics found for the user"
+    post:
+      summary: "Create a new statistics entry"
+      tags:
+        - Statistics
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          description: "The user ID"
+          schema:
+            type: integer
+        - in: query
+          name: gasUsage
+          description: "The gas usage"
+          schema:
+            type: number
+        - in: query
+          name: temperature
+          description: "The temperature"
+          schema:
+            type: number
+        - in: query
+          name: currentCosts
+          description: "The current costs"
+          schema:
+            type: number
+        - in: query
+          name: waterUsage
+          description: "The water usage"
+          schema:
+            type: number
+        - in: query
+          name: carbonEmission
+          description: "The carbon emission"
+          schema:
+            type: number
+        - in: query
+          name: totalCost
+          description: "The total cost"
+          schema:
+            type: number
+        - in: query
+          name: totalGasUsage
+          description: "The total gas usage"
+          schema:
+            type: number
+        - in: query
+          name: averageTemperature
+          description: "The average temperature"
+          schema:
+            type: number
+        - in: query
+          name: totalWaterUsage
+          description: "The total water usage"
+          schema:
+            type: number
+        - in: query
+          name: lastTime
+          description: "The last time"
+          schema:
+            type: string
+        - in: query
+          name: averageTime
+          description: "The average time"
+          schema:
+            type: string
+      responses:
+        201:
+          description: "Statistic created successfully"
+        500:
+          description: "An error occurred while creating the statistic"
+definitions:
+  Statistic:
+    type: object
+    properties:
+      userID:
+        type: integer
+        description: "The user ID"
+      gasUsage:
+        type: number
+        description: "The gas usage"
+      temperature:
+        type: number
+        description: "The temperature"
+      currentCosts:
+        type: number
+        description: "The current costs"
+      waterUsage:
+        type: number
+        description: "The water usage"
+      carbonEmission:
+        type: number
+        description: "The carbon emission"
+      totalCost:
+        type: number
+        description: "The total cost"
+      totalGasUsage:
+        type: number
+        description: "The total gas usage"
+      averageTemperature:
+        type: number
+        description: "The average temperature"
+      totalWaterUsage:
+        type: number
+        description: "The total water usage"
+      lastTime:
+        type: string
+        description: "The last time"
+      averageTime:
+        type: string
+        description: "The average time"

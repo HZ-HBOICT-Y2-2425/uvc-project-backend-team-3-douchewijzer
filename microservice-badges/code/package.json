@@ -2,12 +2,13 @@
   "name": "ex1",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "start.js",
   "type": "module",
   "scripts": {
     "dev": "nodemon start.js"
   },
   "nodemonConfig": {
+    "legacyWatch": true,
     "ignore": [
       "db.json"
     ]
@@ -17,13 +18,12 @@
   "dependencies": {
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
-    "lowdb": "^7.0.1"
+    "lowdb": "^7.0.1",
+    "mysql2": "^3.11.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
   }
 }
-
-
-
-

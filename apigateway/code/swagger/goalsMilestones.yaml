@@ -1,0 +1,439 @@
+swagger: "2.0"
+info:
+  title: "Goals-Milestones Microservice API"
+  version: "1.0.0"
+paths:
+  /goals:
+    get:
+      summary: "Retrieve a list of goals"
+      tags:
+        - Goals-Milestones
+      responses:
+        200:
+          description: "A list of goals"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    goalID:
+                      type: integer
+                      description: "The goal ID"
+                    userID:
+                      type: integer
+                      description: "The user ID"
+                    goalAmount:
+                      type: integer
+                      description: "The goal amount"
+                    coinValue:
+                      type: integer
+                      description: "The coin value"
+                    dataType:
+                      type: string
+                      description: "The data type"
+                    goalProgress:
+                      type: integer
+                      description: "The goal progress"
+                    goalDescription:
+                      type: string
+                      description: "The goal description"
+    post:
+      summary: "Add a new goal"
+      tags:
+        - Goals-Milestones
+      parameters:
+        - in: query
+          name: userID
+          description: "The user ID"
+          schema:
+            type: integer
+        - in: query
+          name: goalAmount
+          description: "The goal amount"
+          schema:
+            type: integer
+        - in: query
+          name: coinValue
+          description: "The coin value"
+          schema:
+            type: integer
+        - in: query
+          name: dataType
+          description: "The data type"
+          schema:
+            type: string
+        - in: query
+          name: goalProgress
+          description: "The goal progress"
+          schema:
+            type: integer
+        - in: query
+          name: goalDescription
+          description: "The goal description"
+          schema:
+            type: string
+      responses:
+        201:
+          description: "Goal added successfully"
+        400:
+          description: "userID is required"
+  /goals/user/{userID}:
+    get:
+      summary: "Retrieve goals for a specific user"
+      tags:
+        - Goals-Milestones
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          description: "The user ID"
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "A list of goals for the user"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    goalID:
+                      type: integer
+                      description: "The goal ID"
+                    userID:
+                      type: integer
+                      description: "The user ID"
+                    goalAmount:
+                      type: integer
+                      description: "The goal amount"
+                    coinValue:
+                      type: integer
+                      description: "The coin value"
+                    dataType:
+                      type: string
+                      description: "The data type"
+                    goalProgress:
+                      type: integer
+                      description: "The goal progress"
+                    goalDescription:
+                      type: string
+                      description: "The goal description"
+  /goals/{goalID}:
+    put:
+      summary: "Update a specific goal"
+      tags:
+        - Goals-Milestones
+      parameters:
+        - in: path
+          name: goalID
+          required: true
+          description: "The goal ID"
+          schema:
+            type: integer
+        - in: query
+          name: name
+          description: "The new goal name"
+          schema:
+            type: string
+        - in: query
+          name: type
+          description: "The new goal type"
+          schema:
+            type: string
+        - in: query
+          name: goalAmount
+          description: "The new goal amount"
+          schema:
+            type: integer
+        - in: query
+          name: goalDescription
+          description: "The new goal description"
+          schema:
+            type: string
+        - in: query
+          name: coinValue
+          description: "The new coin value"
+          schema:
+            type: integer
+        - in: query
+          name: dataType
+          description: "The new data type"
+          schema:
+            type: string
+        - in: query
+          name: goalProgress
+          description: "The new goal progress"
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "Goal updated successfully"
+        400:
+          description: "No fields to update"
+        404:
+          description: "Goal not found"
+    delete:
+      summary: "Delete a specific goal"
+      tags:
+        - Goals-Milestones
+      parameters:
+        - in: path
+          name: goalID
+          required: true
+          description: "The goal ID"
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "Goal deleted"
+        404:
+          description: "Goal not found"
+  /milestones:
+    get:
+      summary: "Retrieve a list of milestones"
+      tags:
+        - Goals-Milestones
+      responses:
+        200:
+          description: "A list of milestones"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    milestoneID:
+                      type: integer
+                      description: "The milestone ID"
+                    userID:
+                      type: integer
+                      description: "The user ID"
+                    coinValue:
+                      type: integer
+                      description: "The coin value"
+                    dataType:
+                      type: string
+                      description: "The data type"
+                    milestoneAmount:
+                      type: integer
+                      description: "The milestone amount"
+                    milestoneProgress:
+                      type: integer
+                      description: "The milestone progress"
+                    milestoneDescription:
+                      type: string
+                      description: "The milestone description"
+    post:
+      summary: "Add a new milestone"
+      tags:
+        - Goals-Milestones
+      parameters:
+        - in: query
+          name: userID
+          description: "The user ID"
+          schema:
+            type: integer
+        - in: query
+          name: coinValue
+          description: "The coin value"
+          schema:
+            type: integer
+        - in: query
+          name: dataType
+          description: "The data type"
+          schema:
+            type: string
+        - in: query
+          name: milestoneAmount
+          description: "The milestone amount"
+          schema:
+            type: integer
+        - in: query
+          name: milestoneProgress
+          description: "The milestone progress"
+          schema:
+            type: integer
+        - in: query
+          name: milestoneDescription
+          description: "The milestone description"
+          schema:
+            type: string
+      responses:
+        201:
+          description: "Milestone added successfully"
+        400:
+          description: "userID is required"
+  /milestones/user/{userID}:
+    get:
+      summary: "Retrieve milestones for a specific user"
+      tags:
+        - Goals-Milestones
+      parameters:
+        - in: path
+          name: userID
+          required: true
+          description: "The user ID"
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "A list of milestones for the user"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    milestoneID:
+                      type: integer
+                      description: "The milestone ID"
+                    userID:
+                      type: integer
+                      description: "The user ID"
+                    coinValue:
+                      type: integer
+                      description: "The coin value"
+                    dataType:
+                      type: string
+                      description: "The data type"
+                    milestoneAmount:
+                      type: integer
+                      description: "The milestone amount"
+                    milestoneProgress:
+                      type: integer
+                      description: "The milestone progress"
+                    milestoneDescription:
+                      type: string
+                      description: "The milestone description"
+  /milestones/{milestoneID}:
+    put:
+      summary: "Update a specific milestone"
+      tags:
+        - Goals-Milestones
+      parameters:
+        - in: path
+          name: milestoneID
+          required: true
+          description: "The milestone ID"
+          schema:
+            type: integer
+        - in: query
+          name: userID
+          description: "The new user ID"
+          schema:
+            type: integer
+        - in: query
+          name: coinValue
+          description: "The new coin value"
+          schema:
+            type: integer
+        - in: query
+          name: dataType
+          description: "The new data type"
+          schema:
+            type: string
+        - in: query
+          name: milestoneAmount
+          description: "The new milestone amount"
+          schema:
+            type: integer
+        - in: query
+          name: milestoneProgress
+          description: "The new milestone progress"
+          schema:
+            type: integer
+        - in: query
+          name: milestoneDescription
+          description: "The new milestone description"
+          schema:
+            type: string
+      responses:
+        200:
+          description: "Milestone updated successfully"
+        400:
+          description: "No fields to update"
+        404:
+          description: "Milestone not found"
+    delete:
+      summary: "Delete a specific milestone"
+      tags:
+        - Goals-Milestones
+      parameters:
+        - in: path
+          name: milestoneID
+          required: true
+          description: "The milestone ID"
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "Milestone deleted"
+        404:
+          description: "Milestone not found"
+definitions:
+  GoalMilestone:
+    type: object
+    properties:
+      goalID:
+        type: integer
+        description: "The goal ID"
+      milestoneID:
+        type: integer
+        description: "The milestone ID"
+      description:
+        type: string
+        description: "The description of the goal or milestone"
+  Goal:
+    type: object
+    properties:
+      goalID:
+        type: integer
+        description: "The goal ID"
+      userID:
+        type: integer
+        description: "The user ID"
+      goalAmount:
+        type: integer
+        description: "The goal amount"
+      coinValue:
+        type: integer
+        description: "The coin value"
+      dataType:
+        type: string
+        description: "The data type"
+      goalProgress:
+        type: integer
+        description: "The goal progress"
+      goalDescription:
+        type: string
+        description: "The goal description"
+  Milestone:
+    type: object
+    properties:
+      milestoneID:
+        type: integer
+        description: "The milestone ID"
+      userID:
+        type: integer
+        description: "The user ID"
+      coinValue:
+        type: integer
+        description: "The coin value"
+      dataType:
+        type: string
+        description: "The data type"
+      milestoneAmount:
+        type: integer
+        description: "The milestone amount"
+      milestoneProgress:
+        type: integer
+        description: "The milestone progress"
+      milestoneDescription:
+        type: string
+        description: "The milestone description"
