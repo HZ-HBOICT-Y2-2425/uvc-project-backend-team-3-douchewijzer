@@ -16,7 +16,6 @@ export async function responseMilestones(req, res) {
     const rows = await executeQuery(pool, 'SELECT * FROM milestone');
     res.status(200).send(rows);
   } catch (error) {
-    console.error('Error fetching milestones:', error);
     res.status(500).send(`An error occurred while fetching milestones: ${error.message}`);
   }
 }
@@ -28,7 +27,6 @@ export async function responseMilestonesByUser(req, res) {
     const rows = await executeQuery(pool, 'SELECT * FROM milestone WHERE userID = ?', [userID]);
     res.status(200).send(rows);
   } catch (error) {
-    console.error('Error fetching milestones by user:', error);
     res.status(500).send(`An error occurred while fetching milestones by user: ${error.message}`);
   }
 }
@@ -81,7 +79,6 @@ export async function updateMilestoneById(req, res) {
     }
     res.status(200).send('Milestone updated successfully.');
   } catch (error) {
-    console.error('Error updating milestone:', error);
     res.status(500).send(`An error occurred while updating the milestone: ${error.message}`);
   }
 }
@@ -93,7 +90,6 @@ export async function deleteMilestoneById(req, res) {
     await executeQuery(pool, 'DELETE FROM milestone WHERE milestoneID = ?', [milestoneID]);
     res.status(200).send(`Milestone deleted with ID: ${milestoneID}`);
   } catch (error) {
-    console.error('Error deleting milestone:', error);
     res.status(500).send(`An error occurred while deleting the milestone: ${error.message}`);
   }
 }
@@ -113,7 +109,6 @@ export async function addMilestone(req, res) {
     if (error.code === 'ER_NO_REFERENCED_ROW_2') {
       res.status(400).send('An error occurred while adding the milestone: The specified userID does not exist.');
     } else {
-      console.error('Error adding milestone:', error);
       res.status(500).send(`An error occurred while adding the milestone: ${error.message}`);
     }
   }

@@ -107,7 +107,6 @@ export async function listOwnedItems(req, res) {
 
     res.status(200).send(ownedItems);
   } catch (error) {
-    console.error('Error listing owned items:', error);
     res.status(500).send('An error occurred while listing the owned items.');
   }
 }
@@ -204,7 +203,6 @@ export async function getOwnedItems(req, res) {
 
     res.status(200).send(ownedItems);
   } catch (error) {
-    console.error('Error getting owned items:', error);
     res.status(500).send('An error occurred while getting the owned items.');
   }
 }

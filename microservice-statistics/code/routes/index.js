@@ -3,7 +3,6 @@ import { responseStatistics, getStatisticsByUser, updateStatisticByUser, createS
 
 const router = express.Router();
 
-// Statistics routes
 router.get('/', responseStatistics);
 router.get('/:userID', getStatisticsByUser);
 router.put('/:userID', updateStatisticByUser);

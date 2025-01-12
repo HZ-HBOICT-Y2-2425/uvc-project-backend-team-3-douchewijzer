@@ -16,7 +16,6 @@ export async function responseStatistics(req, res) {
     const rows = await executeQuery(pool, 'SELECT * FROM statistics');
     res.status(200).send(rows);
   } catch (error) {
-    console.error('Error fetching statistics:', error);
     res.status(500).send(`An error occurred while fetching statistics: ${error.message}`);
   }
 }
@@ -31,7 +30,6 @@ export async function getStatisticsByUser(req, res) {
     }
     res.status(200).send(rows);
   } catch (error) {
-    console.error('Error fetching statistics for user:', error);
     res.status(500).send(`An error occurred while fetching statistics for user ID: ${userID}: ${error.message}`);
   }
 }
@@ -105,7 +103,6 @@ export async function updateStatisticByUser(req, res) {
     }
     res.status(200).send(`Statistic updated for user ID: ${userID}`);
   } catch (error) {
-    console.error('Error updating statistic:', error);
     res.status(500).send(`An error occurred while updating the statistic: ${error.message}`);
   }
 }
@@ -138,7 +135,6 @@ export async function createStatistic(req, res) {
     const result = await executeQuery(pool, query, values);
     res.status(201).send(`Statistic created with ID: ${result.insertId}`);
   } catch (error) {
-    console.error('Error creating statistic:', error);
     res.status(500).send(`An error occurred while creating the statistic: ${error.message}`);
   }
 }
