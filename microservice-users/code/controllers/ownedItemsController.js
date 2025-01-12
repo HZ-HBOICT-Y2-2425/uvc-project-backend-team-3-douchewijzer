@@ -30,64 +30,64 @@ export async function listOwnedItems(req, res) {
 
       const filteredBadges = badges.filter(badge => {
         switch (badge.badgeID) {
-          case 1:
-            return true;
-          case 2:
-            return averageTemperature <= 28;
-          case 3:
-            return averageTemperature <= 22;
-          case 4:
-            return averageTemperature <= 18;
-          case 5:
-            return coins >= 1000;
-          case 6:
-            return coins >= 3000;
-          case 7:
-            return coins >= 10000;
-          case 8:
-            return statisticsEntriesCount >= 1;
-          case 9:
-            return statisticsEntriesCount >= 10;
-          case 10:
-            return statisticsEntriesCount >= 100;
-          default:
-            return false;
+        case 1:
+          return true;
+        case 2:
+          return averageTemperature <= 28;
+        case 3:
+          return averageTemperature <= 22;
+        case 4:
+          return averageTemperature <= 18;
+        case 5:
+          return coins >= 1000;
+        case 6:
+          return coins >= 3000;
+        case 7:
+          return coins >= 10000;
+        case 8:
+          return statisticsEntriesCount >= 1;
+        case 9:
+          return statisticsEntriesCount >= 10;
+        case 10:
+          return statisticsEntriesCount >= 100;
+        default:
+          return false;
         }
       });
 
       filteredBadges.forEach(badge => {
         let createdAt = new Date();
         switch (badge.badgeID) {
-          case 1:
-            createdAt = userCreatedAt;
-            break;
-          case 2:
-            createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 28).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-            break;
-          case 3:
-            createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 22).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-            break;
-          case 4:
-            createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 18).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-            break;
-          case 5:
-            createdAt = userStatistics.filter(stat => coins >= 1000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-            break;
-          case 6:
-            createdAt = userStatistics.filter(stat => coins >= 3000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-            break;
-          case 7:
-            createdAt = userStatistics.filter(stat => coins >= 10000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-            break;
-          case 8:
-            createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 1).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-            break;
-          case 9:
-            createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 10).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-            break;
-          case 10:
-            createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 100).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-            break;
+        case 1:
+          createdAt = userCreatedAt;
+          break;
+        case 2:
+          createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 28).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+          break;
+        case 3:
+          createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 22).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+          break;
+        case 4:
+          createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 18).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+          break;
+        case 5:
+          createdAt = userStatistics.filter(stat => coins >= 1000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+          break;
+        case 6:
+          createdAt = userStatistics.filter(stat => coins >= 3000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+          break;
+        case 7:
+          createdAt = userStatistics.filter(stat => coins >= 10000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+          break;
+        case 8:
+          createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 1).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+          break;
+        case 9:
+          createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 10).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+          break;
+        case 10:
+          createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 100).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+          break;
         }
 
         ownedItems.push({
@@ -128,64 +128,64 @@ export async function getOwnedItems(req, res) {
 
     const filteredBadges = badges.filter(badge => {
       switch (badge.badgeID) {
-        case 1:
-          return true;
-        case 2:
-          return averageTemperature <= 28;
-        case 3:
-          return averageTemperature <= 22;
-        case 4:
-          return averageTemperature <= 18;
-        case 5:
-          return coins >= 1000;
-        case 6:
-          return coins >= 3000;
-        case 7:
-          return coins >= 10000;
-        case 8:
-          return statisticsEntriesCount >= 1;
-        case 9:
-          return statisticsEntriesCount >= 10;
-        case 10:
-          return statisticsEntriesCount >= 100;
-        default:
-          return false;
+      case 1:
+        return true;
+      case 2:
+        return averageTemperature <= 28;
+      case 3:
+        return averageTemperature <= 22;
+      case 4:
+        return averageTemperature <= 18;
+      case 5:
+        return coins >= 1000;
+      case 6:
+        return coins >= 3000;
+      case 7:
+        return coins >= 10000;
+      case 8:
+        return statisticsEntriesCount >= 1;
+      case 9:
+        return statisticsEntriesCount >= 10;
+      case 10:
+        return statisticsEntriesCount >= 100;
+      default:
+        return false;
       }
     });
 
     const ownedItems = filteredBadges.map(badge => {
       let createdAt = new Date();
       switch (badge.badgeID) {
-        case 1:
-          createdAt = userCreatedAt;
-          break;
-        case 2:
-          createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 28).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-          break;
-        case 3:
-          createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 22).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-          break;
-        case 4:
-          createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 18).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-          break;
-        case 5:
-          createdAt = userStatistics.filter(stat => coins >= 1000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-          break;
-        case 6:
-          createdAt = userStatistics.filter(stat => coins >= 3000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-          break;
-        case 7:
-          createdAt = userStatistics.filter(stat => coins >= 10000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-          break;
-        case 8:
-          createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 1).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-          break;
-        case 9:
-          createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 10).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-          break;
-        case 10:
-          createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 100).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
-          break;
+      case 1:
+        createdAt = userCreatedAt;
+        break;
+      case 2:
+        createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 28).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+        break;
+      case 3:
+        createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 22).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+        break;
+      case 4:
+        createdAt = userStatistics.filter(stat => parseFloat(stat.temperature) <= 18).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+        break;
+      case 5:
+        createdAt = userStatistics.filter(stat => coins >= 1000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+        break;
+      case 6:
+        createdAt = userStatistics.filter(stat => coins >= 3000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+        break;
+      case 7:
+        createdAt = userStatistics.filter(stat => coins >= 10000).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+        break;
+      case 8:
+        createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 1).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+        break;
+      case 9:
+        createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 10).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+        break;
+      case 10:
+        createdAt = userStatistics.filter(stat => statisticsEntriesCount >= 100).map(stat => new Date(stat.created_at)).sort((a, b) => a - b)[0] || new Date();
+        break;
       }
 
       return {
