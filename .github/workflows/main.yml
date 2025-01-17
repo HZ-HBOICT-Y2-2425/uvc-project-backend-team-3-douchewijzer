@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - develop
+      - workflow-file
   pull_request:
     branches:
       - main
@@ -65,22 +66,34 @@ jobs:
       - name: Tear Down Docker Containers
         run: docker-compose down
         
-    # Step 8: Set up Node.js environment
+      # Step 8: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with: 
           node-version: '18'
 
-    # step 9: Install dependencies
+      # Step 9: Install dependencies
       - name: Install dependencies
         run: npm install
 
-    # Step 12: Run ESLint (step for linting)
+      # Step 10: Run ESLint (step for linting)
       - name: Run ESLint
         run: npm run lint
 
-            # Notify Discord if the job fails
-      - name: test for failure
+      # Step 11: Advanced Static Code Analysis
+      - name: Run Static Code Analysis with SonarQube
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          npm install -g sonar-scanner
+          sonar-scanner \
+            -Dsonar.projectKey=my-project-key \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+      # Notify Discord if the job fails
+      - name: Notify Discord on Failure
         if: failure()
         run: |
           curl -X POST \
