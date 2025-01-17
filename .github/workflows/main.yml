@@ -18,6 +18,8 @@ jobs:
       # Step 1: Check out the repository
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Required for better relevancy in SonarQube analysis
 
       # Step 2: Set up Docker
       - name: Set up Docker
@@ -71,16 +73,30 @@ jobs:
         with: 
           node-version: '18'
 
-    # step 9: Install dependencies
+    # Step 9: Install dependencies
       - name: Install dependencies
         run: npm install
 
-    # Step 12: Run ESLint (step for linting)
+    # Step 10: Run ESLint (step for linting)
       - name: Run ESLint
         run: npm run lint
 
-            # Notify Discord if the job fails
-      - name: test for failure
+    # Step 11: Run SonarQube Scan
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+    # Optional Step: Fail job if SonarQube Quality Gate fails
+      # - name: SonarQube Quality Gate
+      #   uses: SonarSource/sonarqube-quality-gate-action@v1
+      #   timeout-minutes: 5
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    # Step 12: Notify Discord if the job fails
+      - name: Notify on failure
         if: failure()
         run: |
           curl -X POST \
