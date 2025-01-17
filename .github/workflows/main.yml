@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - develop
-      - workflow-file
   pull_request:
     branches:
       - main
@@ -19,6 +18,8 @@ jobs:
       # Step 1: Check out the repository
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Required for better relevancy in SonarQube analysis
 
       # Step 2: Set up Docker
       - name: Set up Docker
@@ -66,34 +67,36 @@ jobs:
       - name: Tear Down Docker Containers
         run: docker-compose down
         
-      # Step 8: Set up Node.js environment
+    # Step 8: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with: 
           node-version: '18'
 
-      # Step 9: Install dependencies
+    # Step 9: Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # Step 10: Run ESLint (step for linting)
+    # Step 10: Run ESLint (step for linting)
       - name: Run ESLint
         run: npm run lint
 
-      # Step 11: Advanced Static Code Analysis
-      - name: Run Static Code Analysis with SonarQube
+    # Step 11: Run SonarQube Scan
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          npm install -g sonar-scanner
-          sonar-scanner \
-            -Dsonar.projectKey=my-project-key \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-      # Notify Discord if the job fails
-      - name: Notify Discord on Failure
+    # Optional Step: Fail job if SonarQube Quality Gate fails
+      # - name: SonarQube Quality Gate
+      #   uses: SonarSource/sonarqube-quality-gate-action@v1
+      #   timeout-minutes: 5
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    # Step 12: Notify Discord if the job fails
+      - name: Notify on failure
         if: failure()
         run: |
           curl -X POST \
