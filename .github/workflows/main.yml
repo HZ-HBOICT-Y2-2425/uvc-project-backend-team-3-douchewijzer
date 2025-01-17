@@ -1,0 +1,105 @@
+name: CI/CD for douchewijzer Backend
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: self-hosted
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Required for better relevancy in SonarQube analysis
+
+      # Step 2: Set up Docker
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+        
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
+          
+      # Step 3: Create .env file from GitHub Secrets
+      - name: Create .env file
+        run: |
+          echo "Creating .env file..."
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "USERS_PORT=${{ secrets.USERS_PORT }}" >> .env
+          echo "GOALS_MILESTONES_PORT=${{ secrets.GOALS_MILESTONES_PORT }}" >> .env
+          echo "GATEWAY_PORT=${{ secrets.GATEWAY_PORT }}" >> .env
+          echo "STATISTICS_PORT=${{ secrets.STATISTICS_PORT }}" >> .env
+          echo "BADGES_PORT=${{ secrets.BADGES_PORT }}" >> .env
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+
+      # Step 4: Build and start the Docker containers
+      - name: Build and Start Docker Compose
+        run: docker-compose up --build -d
+
+      # Step 5: Wait for services to start
+      - name: Wait for services to be ready
+        run: sleep 5
+
+      # Step 6: Run health checks or tests
+      - name: Run API Gateway tests
+        run: |
+          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/users || exit 1
+          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/badges || exit 1
+          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/goalsMilestones || exit 1
+          curl -f http://localhost:${{ secrets.GATEWAY_PORT }}/statistics || exit 1
+          echo "API Gateway is up and running"
+
+      # Step 7: Tear down Docker containers
+      - name: Tear Down Docker Containers
+        run: docker-compose down
+        
+    # Step 8: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with: 
+          node-version: '18'
+
+    # Step 9: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+    # Step 10: Run ESLint (step for linting)
+      - name: Run ESLint
+        run: npm run lint
+
+    # Step 11: Run SonarQube Scan
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+    # Optional Step: Fail job if SonarQube Quality Gate fails
+      # - name: SonarQube Quality Gate
+      #   uses: SonarSource/sonarqube-quality-gate-action@v1
+      #   timeout-minutes: 5
+      #   env:
+      #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    # Step 12: Notify Discord if the job fails
+      - name: Notify on failure
+        if: failure()
+        run: |
+          curl -X POST \
+          -H "Content-Type: application/json" \
+          -d '{"username": "GitHub Actions", "content": "🚨 Build Failed in CI/CD pipeline: Check the logs at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"}' \
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
